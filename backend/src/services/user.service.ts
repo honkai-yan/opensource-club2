@@ -19,4 +19,8 @@ export class UserService {
       [id],
     );
   }
+
+  async getAllUsersDetails() {
+    return await this.databaseService.query('');
+  }
 }
