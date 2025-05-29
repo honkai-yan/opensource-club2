@@ -1,0 +1,19 @@
+export enum ExceptionEnum {
+  RequestParamExceptionCode = 401,
+  RequestParamException = '请求参数错误',
+
+  CaptchaErrorExceptionCode = 401,
+  CaptchaErrorException = '验证码错误',
+
+  UserNotFoundExceptionCode = 404,
+  UserNotFoundException = '用户不存在',
+
+  PasswordIncorrectExceptionCode = 401,
+  PasswordIncorrectException = '密码错误',
+
+  InternalServerErrorExceptionCode = 500,
+  InternalServerErrorException = '服务器内部错误',
+
+  RefreshTokenInvalidExceptionCode = 401,
+  RefreshTokenInvalidException = '登录信息已失效',
+}
