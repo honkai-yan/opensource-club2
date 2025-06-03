@@ -19,6 +19,16 @@ export class UserController {
         ExceptionEnum.RequestParamExceptionCode,
       );
     }
-    return await this.userService.getUserDetailById(id);
+
+    const data = await this.userService.getUserDetailById(id);
+
+    if (!data) {
+      throw new HttpException(
+        ExceptionEnum.UserNotFoundException,
+        ExceptionEnum.UserNotFoundExceptionCode,
+      );
+    }
+
+    return data;
   }
 }

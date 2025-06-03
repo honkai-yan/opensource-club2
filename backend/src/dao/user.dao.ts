@@ -43,8 +43,8 @@ export class UserDao {
   }
 
   async getUserDetailById(id: number) {
-    return await this.dbService.query(
-      this.getUserDetailSqlBase + ' WHERE id = ?',
+    return await this.dbService.query<User[]>(
+      this.getUserDetailSqlBase + ' WHERE u.id = ?',
       [id],
     );
   }

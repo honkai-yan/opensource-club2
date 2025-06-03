@@ -19,6 +19,6 @@ export class UserService {
   }
 
   async getUserDetailById(id: number) {
-    return await this.userDao.getUserDetailById(id);
+    return (await this.userDao.getUserDetailById(id))[0];
   }
 }
