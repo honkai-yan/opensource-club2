@@ -11,5 +11,7 @@ export class UserController {
   }
 
   @Post('/getDetailById')
-  async getUserDetailById(id: number) {}
+  async getUserDetailById(id: number) {
+    return await this.userService.getUserDetailById(id);
+  }
 }
