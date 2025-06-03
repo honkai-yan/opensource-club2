@@ -5,8 +5,11 @@ import { UserService } from 'src/services/user.service';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Post('/get-all')
+  @Post('/getAllDetails')
   async getUserDetails() {
     return await this.userService.getUserDetails();
   }
+
+  @Post('/getDetailById')
+  async getUserDetailById(id: number) {}
 }
