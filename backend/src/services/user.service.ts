@@ -20,7 +20,7 @@ export class UserService {
     );
   }
 
-  async getUsersDetails() {
+  async getUserDetails() {
     const sql = `
       select
           u.id,

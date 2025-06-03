@@ -7,6 +7,6 @@ export class UserController {
 
   @Post('/get-all')
   async getUserDetails() {
-    return await this.userService.getUsersDetails();
+    return await this.userService.getUserDetails();
   }
 }
