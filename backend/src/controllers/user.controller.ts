@@ -1,4 +1,5 @@
-import { Controller, Post } from '@nestjs/common';
+import { Body, Controller, HttpException, Post } from '@nestjs/common';
+import { ExceptionEnum } from 'src/common/enums/exception.enum';
 import { UserService } from 'src/services/user.service';
 
 @Controller('/user')
@@ -11,7 +12,13 @@ export class UserController {
   }
 
   @Post('/getDetailById')
-  async getUserDetailById(id: number) {
+  async getUserDetailById(@Body('id') id: number) {
+    if (!id) {
+      throw new HttpException(
+        ExceptionEnum.RequestParamException,
+        ExceptionEnum.RequestParamExceptionCode,
+      );
+    }
     return await this.userService.getUserDetailById(id);
   }
 }
