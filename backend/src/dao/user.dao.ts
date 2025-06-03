@@ -38,11 +38,11 @@ export class UserDao {
     return await this.dbService.query('SELECT * FROM users WHERE id = ?', [id]);
   }
 
-  async getUserDetails() {
+  async getProfiles() {
     return await this.dbService.query(this.getUserDetailSqlBase);
   }
 
-  async getUserDetailById(id: number) {
+  async getProfileById(id: number) {
     return await this.dbService.query<User[]>(
       this.getUserDetailSqlBase + ' WHERE u.id = ?',
       [id],

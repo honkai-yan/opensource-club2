@@ -17,8 +17,9 @@ import { CaptchaPayload } from 'src/interfaces/captcha.interface';
 import { ExceptionEnum } from 'src/common/enums/exception.enum';
 import { LoginResponseDto } from 'src/dto/loginResponse.dto';
 import { RefreshTokenPayload } from 'src/interfaces/refreshTokenPayload.interface';
+import { isEmpty } from 'lodash';
 
-@Controller('/login')
+@Controller('/auth')
 export class LoginController {
   constructor(private readonly loginService: LoginService) {}
 
@@ -35,14 +36,15 @@ export class LoginController {
     return res.send(data);
   }
 
-  @Post()
+  @Post('/login')
   async login(
     @Body() loginInfoDto: LoginInfoDto,
     @Req() req: Request,
     @Res() res: Response,
   ) {
+    console.info(loginInfoDto);
     // 校验请求参数
-    if (!loginInfoDto) {
+    if (isEmpty(loginInfoDto)) {
       throw new HttpException(
         ExceptionEnum.RequestParamException,
         ExceptionEnum.RequestParamExceptionCode,
@@ -101,9 +103,17 @@ export class LoginController {
     );
   }
 
-  @Post('/auto')
+  @Post('/autoLogin')
   async autoLogin(@Req() req: Request, @Res() res: Response) {
     // 校验刷新令牌
+    const cookie = req.cookies.refreshToken;
+    if (!cookie) {
+      throw new HttpException(
+        ExceptionEnum.RefreshTokenInvalidException,
+        ExceptionEnum.RefreshTokenInvalidExceptionCode,
+      );
+    }
+    
     const refreshToken: RefreshTokenPayload = (await verifyToken(
       req.cookies.refreshToken,
     )) as any;
@@ -132,7 +142,7 @@ export class LoginController {
       loginResult.refreshToken,
       3600 * 24 * 7 * 1000,
     );
-    
+
     return res.json(
       new LoginResponseDto('登录成功', {
         ...loginResult.userInfo,

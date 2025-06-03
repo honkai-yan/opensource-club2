@@ -1,4 +1,4 @@
-import { Body, Controller, HttpException, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, Post } from '@nestjs/common';
 import { ExceptionEnum } from 'src/common/enums/exception.enum';
 import { UserService } from 'src/services/user.service';
 
@@ -6,13 +6,13 @@ import { UserService } from 'src/services/user.service';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Post('/getAllDetails')
-  async getUserDetails() {
-    return await this.userService.getUserDetails();
+  @Get('/getProfiles')
+  async getProfiles() {
+    return await this.userService.getProfiles();
   }
 
-  @Post('/getDetailById')
-  async getUserDetailById(@Body('id') id: number) {
+  @Post('/getProfileById')
+  async getProfileById(@Body('id') id: number) {
     if (!id) {
       throw new HttpException(
         ExceptionEnum.RequestParamException,
@@ -20,7 +20,7 @@ export class UserController {
       );
     }
 
-    const data = await this.userService.getUserDetailById(id);
+    const data = await this.userService.getProfileById(id);
 
     if (!data) {
       throw new HttpException(

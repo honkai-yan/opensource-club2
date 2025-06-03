@@ -14,11 +14,11 @@ export class UserService {
     return await this.userDao.getUserById(id);
   }
 
-  async getUserDetails() {
-    return await this.userDao.getUserDetails();
+  async getProfiles() {
+    return await this.userDao.getProfiles();
   }
 
-  async getUserDetailById(id: number) {
-    return (await this.userDao.getUserDetailById(id))[0];
+  async getProfileById(id: number) {
+    return (await this.userDao.getProfileById(id))[0];
   }
 }
