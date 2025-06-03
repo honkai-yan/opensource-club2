@@ -7,6 +7,14 @@ import { verifyToken } from 'src/utils/jwt';
 export class UserIdentityMiddleware implements NestMiddleware {
   async use(req: Request, res: Response, next: NextFunction) {
     const accessToken = req.cookies.accessToken as string;
+
+    if (!accessToken) {
+      throw new HttpException(
+        ExceptionEnum.AccessTokenInvalidException,
+        ExceptionEnum.AccessTokenInvalidExceptionCode,
+      );
+    }
+
     const verifiedToken: AccessTokenPayload = (await verifyToken(
       accessToken,
     )) as any;
