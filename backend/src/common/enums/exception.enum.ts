@@ -16,4 +16,7 @@ export enum ExceptionEnum {
 
   RefreshTokenInvalidExceptionCode = 401,
   RefreshTokenInvalidException = '登录信息已失效',
+
+  AccessTokenInvalidExceptionCode = 401,
+  AccessTokenInvalidException = '登录信息已失效',
 }
