@@ -42,28 +42,9 @@ export class LoginController {
     @Req() req: Request,
     @Res() res: Response,
   ) {
-    console.info(loginInfoDto);
-    // 校验请求参数
-    if (isEmpty(loginInfoDto)) {
-      throw new HttpException(
-        ExceptionEnum.RequestParamException,
-        ExceptionEnum.RequestParamExceptionCode,
-      );
-    }
+    const captchaCookie = req.cookies.captcha;
 
-    const { sch_id, pass, captcha } = loginInfoDto;
-
-    if (!sch_id || !pass || !captcha) {
-      throw new HttpException(
-        ExceptionEnum.CaptchaErrorException,
-        ExceptionEnum.CaptchaErrorExceptionCode,
-      );
-    }
-
-    // 校验验证码Cookie
-    const captchaInCookie = req.cookies.captcha;
-
-    if (!captchaInCookie) {
+    if (!captchaCookie) {
       throw new HttpException(
         ExceptionEnum.CaptchaErrorException,
         ExceptionEnum.CaptchaErrorExceptionCode,
@@ -73,7 +54,7 @@ export class LoginController {
     // 发起登录
     const loginResult = await this.loginService.userLogin(
       loginInfoDto,
-      captchaInCookie,
+      captchaCookie,
     );
 
     // 登录失败
@@ -113,7 +94,7 @@ export class LoginController {
         ExceptionEnum.RefreshTokenInvalidExceptionCode,
       );
     }
-    
+
     const refreshToken: RefreshTokenPayload = (await verifyToken(
       req.cookies.refreshToken,
     )) as any;
