@@ -19,4 +19,7 @@ export enum ExceptionEnum {
 
   AccessTokenInvalidExceptionCode = 401,
   AccessTokenInvalidException = '登录信息已失效',
+
+  InvalidUserExceptionCode = 401,
+  InvalidUserException = '非法用户',
 }
