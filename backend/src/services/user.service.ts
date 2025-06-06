@@ -4,13 +4,22 @@ import { UserDao } from 'src/dao/user.dao';
 import { UpdateUserProfileDto } from 'src/dto/updateUserProfile.dto';
 import { OperationResult } from 'src/interfaces/common/operationResult.interface';
 import { ExceptionEnum } from 'src/common/enums/exception.enum';
+import { UserProfileDto } from 'src/dto/userProfile.dto';
 
 @Injectable()
 export class UserService {
   constructor(private readonly userDao: UserDao) {}
 
-  async getUserBySchId(sch_id: string): Promise<User[]> {
-    return await this.userDao.getUserBySchId(sch_id);
+  async getUserBySchId(sch_id: string): Promise<User> {
+    try {
+      return await this.userDao.getUserBySchId(sch_id);
+    } catch (e) {
+      console.error(e);
+      throw new HttpException(
+        ExceptionEnum.InternalServerErrorException,
+        ExceptionEnum.InternalServerErrorExceptionCode,
+      );
+    }
   }
 
   async getUserDetailById(id: number) {
@@ -26,16 +35,40 @@ export class UserService {
     }
   }
 
-  async getUserById(id: number): Promise<User[]> {
-    return await this.userDao.getUserById(id);
+  async getUserById(id: number): Promise<User> {
+    try {
+      return await this.userDao.getUserById(id);
+    } catch (e) {
+      console.error(e);
+      throw new HttpException(
+        ExceptionEnum.InternalServerErrorException,
+        ExceptionEnum.InternalServerErrorExceptionCode,
+      );
+    }
   }
 
-  async getProfiles() {
-    return await this.userDao.getProfiles();
+  async getProfiles(): Promise<UserProfileDto[]> {
+    try {
+      return await this.userDao.getProfiles();
+    } catch (e) {
+      console.error(e);
+      throw new HttpException(
+        ExceptionEnum.InternalServerErrorException,
+        ExceptionEnum.InternalServerErrorExceptionCode,
+      );
+    }
   }
 
-  async getProfileById(id: number) {
-    return (await this.userDao.getProfileById(id))[0];
+  async getProfileById(id: number): Promise<UserProfileDto> {
+    try {
+      return await this.userDao.getProfileById(id);
+    } catch (e) {
+      console.error(e);
+      throw new HttpException(
+        ExceptionEnum.InternalServerErrorException,
+        ExceptionEnum.InternalServerErrorExceptionCode,
+      );
+    }
   }
 
   async updateProfileById(

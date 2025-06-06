@@ -43,7 +43,7 @@ export class LoginService {
     // 验证用户名
     let user: User, userDetail: UserDetailDto;
     try {
-      user = (await this.userService.getUserBySchId(sch_id))[0];
+      user = await this.userService.getUserBySchId(sch_id);
     } catch (e) {
       console.error(e);
       return {
@@ -62,7 +62,6 @@ export class LoginService {
     }
 
     userDetail = await this.userService.getUserDetailById(user.id);
-    user = null;
 
     // 验证密码
     if (!(await bcryptjs.compare(pass, user.password))) {
@@ -95,7 +94,7 @@ export class LoginService {
 
   async autoLogin(userId: number): Promise<LoginResult> {
     try {
-      const [user] = await this.userService.getUserById(userId);
+      const user = await this.userService.getUserById(userId);
 
       if (!user) {
         return {

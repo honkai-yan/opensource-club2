@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { OkPacketParams } from 'mysql2';
 import { UpdateUserProfileDto } from 'src/dto/updateUserProfile.dto';
 import { UserDetailDto } from 'src/dto/userDetail.dto';
+import { UserProfileDto } from 'src/dto/userProfile.dto';
 import { User } from 'src/interfaces/user.interface';
 import { DatabaseService } from 'src/services/database.service';
 
@@ -59,31 +60,42 @@ export class UserDao {
 
   constructor(private readonly dbService: DatabaseService) {}
 
-  async getUserBySchId(sch_id: string): Promise<User[]> {
-    return await this.dbService.query('SELECT * FROM users WHERE sch_id = ?', [
-      sch_id,
-    ]);
+  async getUserBySchId(sch_id: string): Promise<User> {
+    return (
+      await this.dbService.query<User>('SELECT * FROM users WHERE sch_id = ?', [
+        sch_id,
+      ])
+    )[0];
   }
 
-  async getUserById(id: number): Promise<User[]> {
-    return await this.dbService.query('SELECT * FROM users WHERE id = ?', [id]);
+  async getUserById(id: number): Promise<User> {
+    return (
+      await this.dbService.query<User>('SELECT * FROM users WHERE id = ?', [id])
+    )[0];
   }
 
   async getUserDetailById(id: number): Promise<UserDetailDto> {
     return (
-      await this.dbService.query<UserDetailDto>(this.getUserDetailSqlBase, [id])
+      await this.dbService.query<UserDetailDto>(
+        this.getUserDetailSqlBase + 'where u.id = ?',
+        [id],
+      )
     )[0];
   }
 
   async getProfiles() {
-    return await this.dbService.query(this.getUserProfileSqlBase);
+    return await this.dbService.query<UserProfileDto>(
+      this.getUserProfileSqlBase,
+    );
   }
 
-  async getProfileById(id: number) {
-    return await this.dbService.query<User[]>(
-      this.getUserProfileSqlBase + ' WHERE u.id = ?',
-      [id],
-    );
+  async getProfileById(id: number): Promise<UserProfileDto> {
+    return (
+      await this.dbService.query<UserProfileDto>(
+        this.getUserProfileSqlBase + ' WHERE u.id = ?',
+        [id],
+      )
+    )[0];
   }
 
   async updateProfileById(id: number, updateProfileDto: UpdateUserProfileDto) {
