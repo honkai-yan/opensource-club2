@@ -18,6 +18,7 @@ import { ExceptionEnum } from 'src/common/enums/exception.enum';
 import { LoginResponseDto } from 'src/dto/loginResponse.dto';
 import { RefreshTokenPayload } from 'src/interfaces/refreshTokenPayload.interface';
 import { isEmpty } from 'lodash';
+import { getTokenObj } from 'src/utils/token';
 
 @Controller('/auth')
 export class LoginController {
@@ -42,9 +43,9 @@ export class LoginController {
     @Req() req: Request,
     @Res() res: Response,
   ) {
-    const captchaCookie = req.cookies.captcha;
+    const captcha = await getTokenObj<CaptchaPayload>(req, 'captcha');
 
-    if (!captchaCookie) {
+    if (!captcha) {
       throw new HttpException(
         ExceptionEnum.CaptchaErrorException,
         ExceptionEnum.CaptchaErrorExceptionCode,
@@ -54,7 +55,7 @@ export class LoginController {
     // 发起登录
     const loginResult = await this.loginService.userLogin(
       loginInfoDto,
-      captchaCookie,
+      captcha,
     );
 
     // 登录失败

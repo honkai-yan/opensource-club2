@@ -15,24 +15,11 @@ export class LoginService {
 
   async userLogin(
     loginInfoDto: LoginInfoDto,
-    captchaInCookie: string,
+    captchaInCookie: CaptchaPayload,
   ): Promise<LoginResult> {
     const { sch_id, pass, captcha } = loginInfoDto;
 
-    // 验证码解密
-    const verifiedCaptcha: CaptchaPayload = (await verifyToken(
-      captchaInCookie,
-    )) as any;
-
-    if (!verifiedCaptcha) {
-      return {
-        code: ExceptionEnum.CaptchaErrorExceptionCode,
-        message: ExceptionEnum.CaptchaErrorException,
-        userInfo: null,
-      };
-    }
-
-    if (captcha !== verifiedCaptcha.text) {
+    if (captcha !== captchaInCookie.text) {
       return {
         code: ExceptionEnum.CaptchaErrorExceptionCode,
         message: ExceptionEnum.CaptchaErrorException,
