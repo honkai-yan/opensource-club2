@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { User } from 'src/interfaces/user.interface';
 import { UserDao } from 'src/dao/user.dao';
 import { UpdateUserProfileDto } from 'src/dto/updateUserProfile.dto';
@@ -11,6 +11,19 @@ export class UserService {
 
   async getUserBySchId(sch_id: string): Promise<User[]> {
     return await this.userDao.getUserBySchId(sch_id);
+  }
+
+  async getUserDetailById(id: number) {
+    try {
+      const userDetail = await this.userDao.getUserDetailById(id);
+      return userDetail;
+    } catch (e) {
+      console.error(e);
+      throw new HttpException(
+        ExceptionEnum.InternalServerErrorException,
+        ExceptionEnum.InternalServerErrorExceptionCode,
+      );
+    }
   }
 
   async getUserById(id: number): Promise<User[]> {

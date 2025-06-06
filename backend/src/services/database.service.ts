@@ -20,7 +20,7 @@ export class DatabaseService {
 
   async query<T>(sql: string, values?: any[]) {
     const [rows] = await this.pool.query(sql, values);
-    return rows as T;
+    return rows as T[];
   }
 
   async runTransaction<T>(callback: (conn: mysql.Connection) => Promise<T>) {

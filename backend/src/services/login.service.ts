@@ -7,6 +7,7 @@ import { signAccessToken, signRefreshToken, verifyToken } from 'src/utils/jwt';
 import { UserService } from './user.service';
 import { CaptchaPayload } from 'src/interfaces/captcha.interface';
 import bcryptjs from 'bcryptjs';
+import { UserDetailDto } from 'src/dto/userDetail.dto';
 
 @Injectable()
 export class LoginService {
@@ -40,7 +41,7 @@ export class LoginService {
     }
 
     // 验证用户名
-    let user: User;
+    let user: User, userDetail: UserDetailDto;
     try {
       user = (await this.userService.getUserBySchId(sch_id))[0];
     } catch (e) {
@@ -59,6 +60,9 @@ export class LoginService {
         userInfo: null,
       };
     }
+
+    userDetail = await this.userService.getUserDetailById(user.id);
+    user = null;
 
     // 验证密码
     if (!(await bcryptjs.compare(pass, user.password))) {
@@ -85,7 +89,7 @@ export class LoginService {
       message: '登录成功',
       accessToken,
       refreshToken,
-      userInfo: user,
+      userInfo: userDetail,
     };
   }
 
@@ -100,6 +104,8 @@ export class LoginService {
           userInfo: null,
         };
       }
+
+      const userDetail = await this.userService.getUserDetailById(user.id);
 
       const accessToken = await signAccessToken({
         id: user.id,
@@ -116,7 +122,7 @@ export class LoginService {
         message: '登录成功',
         accessToken,
         refreshToken,
-        userInfo: user,
+        userInfo: userDetail,
       };
     } catch (err) {
       console.error(err);
