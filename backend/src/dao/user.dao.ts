@@ -1,4 +1,6 @@
 import { Injectable } from '@nestjs/common';
+import { OkPacketParams } from 'mysql2';
+import { UpdateUserProfileDto } from 'src/dto/updateUserProfile.dto';
 import { User } from 'src/interfaces/user.interface';
 import { DatabaseService } from 'src/services/database.service';
 
@@ -47,5 +49,21 @@ export class UserDao {
       this.getUserDetailSqlBase + ' WHERE u.id = ?',
       [id],
     );
+  }
+
+  async updateProfileById(id: number, updateProfileDto: UpdateUserProfileDto) {
+    const { nickname, description } = updateProfileDto;
+    const res = await this.dbService.runTransaction<OkPacketParams>(
+      async (conn) => {
+        // 悲观锁
+        await conn.query('SELECT * FROM users WHERE id = ? FOR UPDATE', [id]);
+        const [res] = await conn.query(
+          `update users set nick_name = ?, description = ? where id = ?`,
+          [nickname, description, id],
+        );
+        return res as OkPacketParams;
+      },
+    );
+    return res.affectedRows;
   }
 }

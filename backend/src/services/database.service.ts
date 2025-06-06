@@ -23,6 +23,21 @@ export class DatabaseService {
     return rows as T;
   }
 
+  async runTransaction<T>(callback: (conn: mysql.Connection) => Promise<T>) {
+    const conn = await this.pool.getConnection();
+    try {
+      await conn.beginTransaction();
+      const res = await callback(conn);
+      await conn.commit();
+      return res;
+    } catch (e) {
+      await conn.rollback();
+      throw e;
+    } finally {
+      conn.release();
+    }
+  }
+
   async onModuleDestroy() {
     await this.pool.end();
   }

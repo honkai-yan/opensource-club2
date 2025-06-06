@@ -1,6 +1,18 @@
-import { Body, Controller, Get, HttpException, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpException,
+  Post,
+  Req,
+} from '@nestjs/common';
+import { Request } from 'express';
 import { ExceptionEnum } from 'src/common/enums/exception.enum';
+import { OperationResponseDto } from 'src/dto/operationResponse.dto';
+import { UpdateUserProfileDto } from 'src/dto/updateUserProfile.dto';
+import { AccessTokenPayload } from 'src/interfaces/accessTokenPayload.interface';
 import { UserService } from 'src/services/user.service';
+import { verifyToken } from 'src/utils/jwt';
 
 @Controller('/user')
 export class UserController {
@@ -30,5 +42,28 @@ export class UserController {
     }
 
     return data;
+  }
+
+  @Post('/updateProfile')
+  async updateProfile(
+    @Body() updateUserProfileDto: UpdateUserProfileDto,
+    @Req() req: Request,
+  ) {
+    const accessTokenCookie = req.cookies.accessToken;
+    const accessToken: AccessTokenPayload = (await verifyToken(
+      accessTokenCookie,
+    )) as any;
+
+    const id = accessToken.id;
+    const result = await this.userService.updateProfileById(
+      id,
+      updateUserProfileDto,
+    );
+
+    if (result.code !== 200) {
+      throw new HttpException(result.message, result.code);
+    }
+
+    return new OperationResponseDto(result.code, result.message);
   }
 }
