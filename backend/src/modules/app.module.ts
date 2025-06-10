@@ -4,6 +4,7 @@ import { LoginModule } from './login.module';
 import { UserModule } from './user.module';
 import { AuthenticationMiddleware } from 'src/middleware/authentication.middleware';
 import { UserController } from 'src/controllers/user.controller';
+import { AuthorizationMiddleware } from 'src/middleware/authorization.middleware';
 
 @Module({
   imports: [
@@ -18,6 +19,10 @@ import { UserController } from 'src/controllers/user.controller';
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(AuthenticationMiddleware).forRoutes(UserController);
+    consumer
+      .apply(AuthenticationMiddleware)
+      .forRoutes(UserController)
+      .apply(AuthorizationMiddleware)
+      .forRoutes(UserController);
   }
 }

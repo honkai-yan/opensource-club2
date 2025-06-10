@@ -3,7 +3,7 @@ import mysql from 'mysql2/promise';
 
 @Injectable()
 export class DatabaseService {
-  pool: mysql.Pool;
+  private pool: mysql.Pool;
 
   constructor() {
     this.pool = mysql.createPool({

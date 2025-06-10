@@ -22,4 +22,7 @@ export enum ExceptionEnum {
 
   InvalidUserExceptionCode = 401,
   InvalidUserException = '非法用户',
+
+  NoPermissionExceptionCode = 401,
+  NoPermissionException = '权限不足',
 }

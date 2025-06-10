@@ -100,4 +100,23 @@ export class UserService {
       };
     }
   }
+
+  async getUserRoleById(id: number): Promise<string> {
+    try {
+      const profileName = await this.userDao.getUserRoleById(id);
+      if (!profileName) {
+        throw new HttpException(
+          ExceptionEnum.UserNotFoundException,
+          ExceptionEnum.UserNotFoundExceptionCode,
+        );
+      }
+      return profileName;
+    } catch (e) {
+      console.error(e);
+      throw new HttpException(
+        ExceptionEnum.InternalServerErrorException,
+        ExceptionEnum.InternalServerErrorExceptionCode,
+      );
+    }
+  }
 }

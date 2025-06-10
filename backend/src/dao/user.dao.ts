@@ -113,4 +113,12 @@ export class UserDao {
     );
     return res.affectedRows;
   }
+
+  async getUserRoleById(id: number): Promise<string> {
+    const res = await this.dbService.query<string>(
+      'select p.name from positions p join users_positions up on p.id = up.pos_id join users u on up.user_id = u.id where u.id = ?;',
+      [id],
+    );
+    return res[0];
+  }
 }
