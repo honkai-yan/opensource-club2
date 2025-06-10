@@ -7,6 +7,7 @@ import { ExceptionEnum } from 'src/common/enums/exception.enum';
 import { UserProfileDto } from 'src/dto/userProfile.dto';
 import { AddUserDto } from 'src/dto/addUser.dto';
 import bcrypt from 'bcryptjs';
+import { UserRole } from 'src/interfaces/userRole.interface';
 
 @Injectable()
 export class UserService {
@@ -105,14 +106,14 @@ export class UserService {
 
   async getUserRoleById(id: number): Promise<string> {
     try {
-      const profileName = await this.userDao.getUserRoleById(id);
-      if (!profileName) {
+      const role = await this.userDao.getUserRoleById(id);
+      if (!role) {
         throw new HttpException(
           ExceptionEnum.UserNotFoundException,
           ExceptionEnum.UserNotFoundExceptionCode,
         );
       }
-      return profileName;
+      return role.name;
     } catch (e) {
       console.error(e);
       throw new HttpException(

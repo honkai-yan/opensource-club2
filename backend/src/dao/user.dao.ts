@@ -4,6 +4,7 @@ import { UpdateUserProfileDto } from 'src/dto/updateUserProfile.dto';
 import { UserDetailDto } from 'src/dto/userDetail.dto';
 import { UserProfileDto } from 'src/dto/userProfile.dto';
 import { User } from 'src/interfaces/user.interface';
+import { UserRole } from 'src/interfaces/userRole.interface';
 import { DatabaseService } from 'src/services/database.service';
 
 @Injectable()
@@ -114,8 +115,8 @@ export class UserDao {
     return res.affectedRows;
   }
 
-  async getUserRoleById(id: number): Promise<string> {
-    const res = await this.dbService.query<string>(
+  async getUserRoleById(id: number): Promise<UserRole> {
+    const res = await this.dbService.query<UserRole>(
       'select p.name from positions p join users_positions up on p.id = up.pos_id join users u on up.user_id = u.id where u.id = ?;',
       [id],
     );

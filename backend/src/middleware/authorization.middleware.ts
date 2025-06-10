@@ -19,11 +19,11 @@ export class AuthorizationMiddleware implements NestMiddleware {
         ExceptionEnum.AccessTokenInvalidExceptionCode,
       );
     }
-    
+
     const { id } = tokenObj;
-    const role = await this.userService.getUserRoleById(id);
-    
-    if (!this.roleList.includes(role)) {
+    const roleName = await this.userService.getUserRoleById(id);
+
+    if (!this.roleList.includes(roleName)) {
       throw new HttpException(
         ExceptionEnum.NoPermissionException,
         ExceptionEnum.NoPermissionExceptionCode,
