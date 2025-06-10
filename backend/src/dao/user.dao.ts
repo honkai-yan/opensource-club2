@@ -121,4 +121,18 @@ export class UserDao {
     );
     return res[0];
   }
+
+  async addUser(user: User) {
+    const { name, sch_id, password } = user;
+    const res = await this.dbService.runTransaction<OkPacketParams>(
+      async (conn) => {
+        const [res] = await conn.query(
+          `insert into users (name, sch_id, password, join_date) values (?, ?, ?, now())`,
+          [name, sch_id, password],
+        );
+        return res as OkPacketParams;
+      },
+    );
+    return res.affectedRows;
+  }
 }

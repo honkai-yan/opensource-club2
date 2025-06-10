@@ -8,22 +8,23 @@ import {
 } from '@nestjs/common';
 import { Request } from 'express';
 import { ExceptionEnum } from 'src/common/enums/exception.enum';
+import { AddUserDto } from 'src/dto/addUser.dto';
 import { OperationResponseDto } from 'src/dto/operationResponse.dto';
 import { UpdateUserProfileDto } from 'src/dto/updateUserProfile.dto';
 import { AccessTokenPayload } from 'src/interfaces/accessTokenPayload.interface';
 import { UserService } from 'src/services/user.service';
 import { verifyToken } from 'src/utils/jwt';
 
-@Controller('/user')
+@Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Get('/getProfiles')
+  @Get('getProfiles')
   async getProfiles() {
     return await this.userService.getProfiles();
   }
 
-  @Post('/getProfileById')
+  @Post('getProfileById')
   async getProfileById(@Body('id') id: number) {
     if (!id) {
       throw new HttpException(
@@ -44,7 +45,7 @@ export class UserController {
     return data;
   }
 
-  @Post('/updateProfile')
+  @Post('updateProfile')
   async updateProfile(
     @Body() updateUserProfileDto: UpdateUserProfileDto,
     @Req() req: Request,
@@ -65,5 +66,20 @@ export class UserController {
     }
 
     return new OperationResponseDto(result.code, result.message);
+  }
+
+  @Post('addUser')
+  async addUser(@Body() addUserDto: AddUserDto) {
+    const operationResponse = await this.userService.addUser(addUserDto);
+    if (operationResponse.code !== 200) {
+      throw new HttpException(
+        operationResponse.message,
+        operationResponse.code,
+      );
+    }
+    return new OperationResponseDto(
+      operationResponse.code,
+      operationResponse.message,
+    );
   }
 }

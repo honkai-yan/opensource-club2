@@ -5,6 +5,8 @@ import { UpdateUserProfileDto } from 'src/dto/updateUserProfile.dto';
 import { OperationResult } from 'src/interfaces/common/operationResult.interface';
 import { ExceptionEnum } from 'src/common/enums/exception.enum';
 import { UserProfileDto } from 'src/dto/userProfile.dto';
+import { AddUserDto } from 'src/dto/addUser.dto';
+import bcrypt from 'bcryptjs';
 
 @Injectable()
 export class UserService {
@@ -113,6 +115,32 @@ export class UserService {
       return profileName;
     } catch (e) {
       console.error(e);
+      throw new HttpException(
+        ExceptionEnum.InternalServerErrorException,
+        ExceptionEnum.InternalServerErrorExceptionCode,
+      );
+    }
+  }
+
+  async addUser(addUserDto: AddUserDto): Promise<OperationResult> {
+    try {
+      const password = bcrypt.hashSync('123456', 10);
+      const affectedRows = await this.userDao.addUser({
+        name: addUserDto.name,
+        sch_id: addUserDto.sch_id,
+        password,
+      });
+      if (affectedRows === 0) {
+        return {
+          code: 500,
+          message: '系统错误，请稍后再试',
+        };
+      }
+      return {
+        code: 200,
+        message: '操作成功',
+      };
+    } catch (error) {
       throw new HttpException(
         ExceptionEnum.InternalServerErrorException,
         ExceptionEnum.InternalServerErrorExceptionCode,

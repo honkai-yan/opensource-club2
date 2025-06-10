@@ -20,11 +20,11 @@ import { RefreshTokenPayload } from 'src/interfaces/refreshTokenPayload.interfac
 import { isEmpty } from 'lodash';
 import { getTokenObj } from 'src/utils/token';
 
-@Controller('/auth')
+@Controller('auth')
 export class LoginController {
   constructor(private readonly loginService: LoginService) {}
 
-  @Get('/getCaptcha')
+  @Get('getCaptcha')
   async getCaptcha(@Res() res: Response) {
     let { data, text } = svgCaptcha.create();
     text = text.toLowerCase();
@@ -37,7 +37,7 @@ export class LoginController {
     return res.send(data);
   }
 
-  @Post('/login')
+  @Post('login')
   async login(
     @Body() loginInfoDto: LoginInfoDto,
     @Req() req: Request,
@@ -85,7 +85,7 @@ export class LoginController {
     );
   }
 
-  @Post('/autoLogin')
+  @Post('autoLogin')
   async autoLogin(@Req() req: Request, @Res() res: Response) {
     // 校验刷新令牌
     const cookie = req.cookies.refreshToken;
