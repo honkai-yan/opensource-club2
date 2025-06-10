@@ -142,6 +142,13 @@ export class UserService {
         message: '操作成功',
       };
     } catch (error) {
+      if (error.errno === 1062) {
+        throw new HttpException(
+          ExceptionEnum.DuplicateUserException,
+          ExceptionEnum.DuplicateUserExceptionCode,
+        );
+      }
+      console.error(error);
       throw new HttpException(
         ExceptionEnum.InternalServerErrorException,
         ExceptionEnum.InternalServerErrorExceptionCode,

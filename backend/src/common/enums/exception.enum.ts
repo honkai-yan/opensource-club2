@@ -25,4 +25,7 @@ export enum ExceptionEnum {
 
   NoPermissionExceptionCode = 401,
   NoPermissionException = '权限不足',
+
+  DuplicateUserExceptionCode = 409,
+  DuplicateUserException = '用户已存在',
 }
