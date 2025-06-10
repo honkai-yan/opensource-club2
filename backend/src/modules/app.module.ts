@@ -29,6 +29,10 @@ export class AppModule {
         path: 'user/addUser',
         method: RequestMethod.POST,
       },
+      {
+        path: 'user/delUser',
+        method: RequestMethod.POST,
+      },
     );
   }
 }

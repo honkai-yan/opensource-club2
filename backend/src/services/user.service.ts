@@ -155,4 +155,26 @@ export class UserService {
       );
     }
   }
+
+  async delUserById(id: number): Promise<OperationResult> {
+    try {
+      const affectedRows = await this.userDao.delUserById(id);
+      if (affectedRows === 0) {
+        return {
+          code: ExceptionEnum.UserNotFoundExceptionCode as number,
+          message: ExceptionEnum.UserNotFoundException as string,
+        };
+      }
+      return {
+        code: 200,
+        message: '操作成功',
+      };
+    } catch (error) {
+      console.error(error);
+      throw new HttpException(
+        ExceptionEnum.InternalServerErrorException,
+        ExceptionEnum.InternalServerErrorExceptionCode,
+      );
+    }
+  }
 }

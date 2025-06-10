@@ -9,6 +9,7 @@ import {
 import { Request } from 'express';
 import { ExceptionEnum } from 'src/common/enums/exception.enum';
 import { AddUserDto } from 'src/dto/addUser.dto';
+import { DelUserDto } from 'src/dto/delUser.dto';
 import { OperationResponseDto } from 'src/dto/operationResponse.dto';
 import { UpdateUserProfileDto } from 'src/dto/updateUserProfile.dto';
 import { AccessTokenPayload } from 'src/interfaces/accessTokenPayload.interface';
@@ -81,5 +82,14 @@ export class UserController {
       operationResponse.code,
       operationResponse.message,
     );
+  }
+
+  @Post('delUser')
+  async delUser(@Body() delUser: DelUserDto) {
+    const result = await this.userService.delUserById(delUser.id);
+    if (result.code !== 200) {
+      throw new HttpException(result.message, result.code);
+    }
+    return new OperationResponseDto(result.code, result.message);
   }
 }

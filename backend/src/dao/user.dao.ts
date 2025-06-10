@@ -136,4 +136,14 @@ export class UserDao {
     );
     return res.affectedRows;
   }
+
+  async delUserById(id: number): Promise<number> {
+    const res = await this.dbService.runTransaction<OkPacketParams>(
+      async (conn) => {
+        const [res] = await conn.query('delete from users where id = ?', [id]);
+        return res as OkPacketParams;
+      },
+    );
+    return res.affectedRows;
+  }
 }

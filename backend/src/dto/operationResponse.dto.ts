@@ -1,8 +1,8 @@
 export class OperationResponseDto {
-  code: number;
+  statusCode: number;
   message: string;
   constructor(code: number, message: string) {
-    this.code = code;
+    this.statusCode = code;
     this.message = message;
   }
 }
