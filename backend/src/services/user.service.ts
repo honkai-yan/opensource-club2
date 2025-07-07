@@ -8,16 +8,20 @@ import { UserProfileDto } from 'src/dto/userProfile.dto';
 import { AddUserDto } from 'src/dto/addUser.dto';
 import bcrypt from 'bcryptjs';
 import { UserRole } from 'src/interfaces/userRole.interface';
+import { Logger } from 'nestjs-pino';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly userDao: UserDao) {}
+  constructor(
+    private readonly userDao: UserDao,
+    private readonly logger: Logger,
+  ) {}
 
   async getUserBySchId(sch_id: string): Promise<User> {
     try {
       return await this.userDao.getUserBySchId(sch_id);
     } catch (e) {
-      console.error(e);
+      this.logger.error(e);
       throw new HttpException(
         ExceptionEnum.InternalServerErrorException,
         ExceptionEnum.InternalServerErrorExceptionCode,
@@ -30,7 +34,7 @@ export class UserService {
       const userDetail = await this.userDao.getUserDetailById(id);
       return userDetail;
     } catch (e) {
-      console.error(e);
+      this.logger.error(e);
       throw new HttpException(
         ExceptionEnum.InternalServerErrorException,
         ExceptionEnum.InternalServerErrorExceptionCode,
@@ -42,7 +46,7 @@ export class UserService {
     try {
       return await this.userDao.getUserById(id);
     } catch (e) {
-      console.error(e);
+      this.logger.error(e);
       throw new HttpException(
         ExceptionEnum.InternalServerErrorException,
         ExceptionEnum.InternalServerErrorExceptionCode,
@@ -54,7 +58,7 @@ export class UserService {
     try {
       return await this.userDao.getProfiles();
     } catch (e) {
-      console.error(e);
+      this.logger.error(e);
       throw new HttpException(
         ExceptionEnum.InternalServerErrorException,
         ExceptionEnum.InternalServerErrorExceptionCode,
@@ -66,7 +70,7 @@ export class UserService {
     try {
       return await this.userDao.getProfileById(id);
     } catch (e) {
-      console.error(e);
+      this.logger.error(e);
       throw new HttpException(
         ExceptionEnum.InternalServerErrorException,
         ExceptionEnum.InternalServerErrorExceptionCode,
@@ -96,7 +100,7 @@ export class UserService {
         message: '操作成功',
       };
     } catch (e) {
-      console.error(e);
+      this.logger.error(e);
       return {
         code: ExceptionEnum.InternalServerErrorExceptionCode as number,
         message: ExceptionEnum.InternalServerErrorException as string,
@@ -115,7 +119,7 @@ export class UserService {
       }
       return role.name;
     } catch (e) {
-      console.error(e);
+      this.logger.error(e);
       throw new HttpException(
         ExceptionEnum.InternalServerErrorException,
         ExceptionEnum.InternalServerErrorExceptionCode,
@@ -148,7 +152,7 @@ export class UserService {
           ExceptionEnum.DuplicateUserExceptionCode,
         );
       }
-      console.error(error);
+      this.logger.error(error);
       throw new HttpException(
         ExceptionEnum.InternalServerErrorException,
         ExceptionEnum.InternalServerErrorExceptionCode,
@@ -170,7 +174,7 @@ export class UserService {
         message: '操作成功',
       };
     } catch (error) {
-      console.error(error);
+      this.logger.error(error);
       throw new HttpException(
         ExceptionEnum.InternalServerErrorException,
         ExceptionEnum.InternalServerErrorExceptionCode,
@@ -204,7 +208,7 @@ export class UserService {
         message: '操作成功',
       };
     } catch (error) {
-      console.error(error);
+      this.logger.error(error);
       if (error.message.includes('用户')) {
         return {
           code: 409,

@@ -5,6 +5,7 @@ import { UserModule } from './user.module';
 import { AuthenticationMiddleware } from 'src/middleware/authentication.middleware';
 import { UserController } from 'src/controllers/user.controller';
 import { AuthorizationMiddleware } from 'src/middleware/authorization.middleware';
+import { loggerConfig } from 'src/configs/pino';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { AuthorizationMiddleware } from 'src/middleware/authorization.middleware
     }),
     LoginModule,
     UserModule,
+    loggerConfig,
   ],
   controllers: [],
   providers: [],

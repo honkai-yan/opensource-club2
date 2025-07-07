@@ -19,16 +19,20 @@ import { LoginResponseDto } from 'src/dto/loginResponse.dto';
 import { RefreshTokenPayload } from 'src/interfaces/refreshTokenPayload.interface';
 import { isEmpty } from 'lodash';
 import { getTokenObj } from 'src/utils/token';
+import { Logger } from 'nestjs-pino';
 
 @Controller('auth')
 export class LoginController {
-  constructor(private readonly loginService: LoginService) {}
+  constructor(
+    private readonly loginService: LoginService,
+    private readonly logger: Logger,
+  ) {}
 
   @Get('getCaptcha')
   async getCaptcha(@Res() res: Response) {
     let { data, text } = svgCaptcha.create();
     text = text.toLowerCase();
-    console.info(text);
+    this.logger.debug(text);
     const payload: CaptchaPayload = {
       text: text,
     };

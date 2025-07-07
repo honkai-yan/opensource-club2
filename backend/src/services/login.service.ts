@@ -8,10 +8,14 @@ import { UserService } from './user.service';
 import { CaptchaPayload } from 'src/interfaces/captcha.interface';
 import bcryptjs from 'bcryptjs';
 import { UserDetailDto } from 'src/dto/userDetail.dto';
+import { Logger } from 'nestjs-pino';
 
 @Injectable()
 export class LoginService {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly logger: Logger,
+  ) {}
 
   async userLogin(
     loginInfoDto: LoginInfoDto,
@@ -32,7 +36,7 @@ export class LoginService {
     try {
       user = await this.userService.getUserBySchId(sch_id);
     } catch (e) {
-      console.error(e);
+      this.logger.error(e);
       return {
         code: ExceptionEnum.InternalServerErrorExceptionCode,
         message: ExceptionEnum.InternalServerErrorException,
@@ -111,7 +115,7 @@ export class LoginService {
         userInfo: userDetail,
       };
     } catch (err) {
-      console.error(err);
+      this.logger.error(err);
       return {
         code: ExceptionEnum.InternalServerErrorExceptionCode,
         message: ExceptionEnum.InternalServerErrorException,
