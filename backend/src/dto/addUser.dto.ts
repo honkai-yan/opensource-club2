@@ -1,4 +1,12 @@
-import { IsDefined, IsNotEmpty, IsString, MaxLength } from 'class-validator';
+import {
+  IsArray,
+  IsDefined,
+  IsNotEmpty,
+  IsString,
+  MaxLength,
+  ValidateNested,
+} from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class AddUserDto {
   @IsNotEmpty()
@@ -12,4 +20,11 @@ export class AddUserDto {
   @IsString()
   @MaxLength(20)
   sch_id: string;
+}
+
+export class AddUserBatchDto {
+  @Type(() => AddUserDto)
+  @IsArray()
+  @ValidateNested({ each: true })
+  items: AddUserDto[];
 }

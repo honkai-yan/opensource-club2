@@ -1,11 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { OkPacketParams } from 'mysql2';
+import { AddUserDto } from 'src/dto/addUser.dto';
 import { UpdateUserProfileDto } from 'src/dto/updateUserProfile.dto';
 import { UserDetailDto } from 'src/dto/userDetail.dto';
 import { UserProfileDto } from 'src/dto/userProfile.dto';
 import { User } from 'src/interfaces/user.interface';
 import { UserRole } from 'src/interfaces/userRole.interface';
 import { DatabaseService } from 'src/services/database.service';
+import bcryptjs from 'bcryptjs';
 
 @Injectable()
 export class UserDao {
@@ -145,5 +147,28 @@ export class UserDao {
       },
     );
     return res.affectedRows;
+  }
+
+  /**
+   * 批量添加用户
+   * @param userList 要添加的用户的列表
+   * @returns 若用户列表为空，则返回0，执行成功则返回1，否则抛出错误
+   */
+  async addUserBatch(userList: AddUserDto[]): Promise<number> {
+    if (userList.length === 0) return 0;
+    // 循环插入每一个用户，遇到重复用户时抛出这个用户
+    await this.dbService.runTransaction<void>(async (conn) => {
+      const password = await bcryptjs.hash('123456', 10);
+      for (const user of userList) {
+        const { name, sch_id } = user;
+        const selectedUser = await this.getUserBySchId(sch_id);
+        if (user) throw new Error(`用户 ${name} 已存在`);
+        conn.execute(
+          `insert into users (name, sch_id, password) values (?, ?, ?)`,
+          [name, sch_id, password],
+        );
+      }
+    });
+    return 1;
   }
 }

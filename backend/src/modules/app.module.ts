@@ -22,15 +22,15 @@ export class AppModule {
     consumer.apply(AuthenticationMiddleware).forRoutes(UserController);
     consumer.apply(AuthorizationMiddleware).forRoutes(
       {
-        path: 'user/updateProfile',
-        method: RequestMethod.POST,
-      },
-      {
         path: 'user/addUser',
         method: RequestMethod.POST,
       },
       {
         path: 'user/delUser',
+        method: RequestMethod.POST,
+      },
+      {
+        path: 'user/addUserBatch',
         method: RequestMethod.POST,
       },
     );

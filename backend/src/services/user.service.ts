@@ -177,4 +177,44 @@ export class UserService {
       );
     }
   }
+
+  async addUserBatch(userList: AddUserDto[]): Promise<OperationResult> {
+    if (userList.length === 0) {
+      return {
+        code: 400,
+        message: '用户列表为空',
+      };
+    }
+    if (userList.length > 200) {
+      return {
+        code: 400,
+        message: '最大添加数量为200个',
+      };
+    }
+    try {
+      const affectedRows = await this.userDao.addUserBatch(userList);
+      if (affectedRows === 0) {
+        return {
+          code: 400,
+          message: '用户列表为空',
+        };
+      }
+      return {
+        code: 200,
+        message: '操作成功',
+      };
+    } catch (error) {
+      console.error(error);
+      if (error.message.includes('用户')) {
+        return {
+          code: 409,
+          message: error.message,
+        };
+      }
+      throw new HttpException(
+        ExceptionEnum.InternalServerErrorException,
+        ExceptionEnum.InternalServerErrorExceptionCode,
+      );
+    }
+  }
 }
