@@ -142,7 +142,10 @@ export class UserDao {
   async delUserById(id: number): Promise<number> {
     const res = await this.dbService.runTransaction<OkPacketParams>(
       async (conn) => {
-        const [res] = await conn.query('delete from users where id = ?', [id]);
+        const [res] = await conn.execute(
+          'update users set is_deleted = 1 where id = ?',
+          [id],
+        );
         return res as OkPacketParams;
       },
     );
@@ -162,7 +165,7 @@ export class UserDao {
       for (const user of userList) {
         const { name, sch_id } = user;
         const selectedUser = await this.getUserBySchId(sch_id);
-        if (user) throw new Error(`用户 ${name} 已存在`);
+        if (selectedUser) throw new Error(`用户 ${name} 已存在`);
         conn.execute(
           `insert into users (name, sch_id, password) values (?, ?, ?)`,
           [name, sch_id, password],
@@ -170,5 +173,18 @@ export class UserDao {
       }
     });
     return 1;
+  }
+
+  /**
+   * 批量删除用户
+   * @param userIdList 被批量删除的用户id的列表
+   * @returns 无
+   */
+  async delUserBatch(userIdList: number[]): Promise<void> {
+    await this.dbService.runTransaction(async (conn) => {
+      for (const id of userIdList) {
+        await this.delUserById(id);
+      }
+    });
   }
 }

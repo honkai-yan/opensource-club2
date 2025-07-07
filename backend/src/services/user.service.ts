@@ -221,4 +221,26 @@ export class UserService {
       );
     }
   }
+
+  async delUserBatch(userIdList: number[]): Promise<OperationResult> {
+    if (userIdList.length === 0) {
+      return {
+        code: 400,
+        message: '用户列表为空',
+      };
+    }
+    try {
+      await this.userDao.delUserBatch(userIdList);
+      return {
+        code: 200,
+        message: '删除成功',
+      };
+    } catch (error) {
+      this.logger.error(error);
+      throw new HttpException(
+        ExceptionEnum.InternalServerErrorException,
+        ExceptionEnum.InternalServerErrorExceptionCode,
+      );
+    }
+  }
 }

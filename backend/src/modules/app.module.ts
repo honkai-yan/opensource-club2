@@ -35,6 +35,10 @@ export class AppModule {
         path: 'user/addUserBatch',
         method: RequestMethod.POST,
       },
+      {
+        path: 'user/delUserBatch',
+        method: RequestMethod.POST,
+      },
     );
   }
 }
