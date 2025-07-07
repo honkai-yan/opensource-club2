@@ -65,22 +65,26 @@ export class UserDao {
 
   async getUserBySchId(sch_id: string): Promise<User> {
     return (
-      await this.dbService.query<User>('SELECT * FROM users WHERE sch_id = ?', [
-        sch_id,
-      ])
+      await this.dbService.query<User>(
+        'SELECT * FROM users WHERE sch_id = ? and is_deleted = 0',
+        [sch_id],
+      )
     )[0];
   }
 
   async getUserById(id: number): Promise<User> {
     return (
-      await this.dbService.query<User>('SELECT * FROM users WHERE id = ?', [id])
+      await this.dbService.query<User>(
+        'SELECT * FROM users WHERE id = ? and is_deleted = 0',
+        [id],
+      )
     )[0];
   }
 
   async getUserDetailById(id: number): Promise<UserDetailDto> {
     return (
       await this.dbService.query<UserDetailDto>(
-        this.getUserDetailSqlBase + 'where u.id = ?',
+        this.getUserDetailSqlBase + 'where u.id = ? and is_deleted = 0',
         [id],
       )
     )[0];
@@ -88,14 +92,14 @@ export class UserDao {
 
   async getProfiles() {
     return await this.dbService.query<UserProfileDto>(
-      this.getUserProfileSqlBase,
+      this.getUserProfileSqlBase + 'where u.is_deleted = 0',
     );
   }
 
   async getProfileById(id: number): Promise<UserProfileDto> {
     return (
       await this.dbService.query<UserProfileDto>(
-        this.getUserProfileSqlBase + ' WHERE u.id = ?',
+        this.getUserProfileSqlBase + ' WHERE u.id = ? and u.is_deleted = 0',
         [id],
       )
     )[0];
@@ -127,14 +131,20 @@ export class UserDao {
 
   async addUser(user: User) {
     const { name, sch_id, password } = user;
-    const res = await this.dbService.runTransaction<OkPacketParams>(
-      async (conn) => {
-        const [res] = await conn.query(
-          `insert into users (name, sch_id, password, join_date) values (?, ?, ?, now())`,
-          [name, sch_id, password],
-        );
-        return res as OkPacketParams;
-      },
+    const [oldUser] = await this.dbService.query<User>(
+      `select id from users where sch_id = ? and is_deleted = 1`,
+      [sch_id],
+    );
+    if (oldUser) {
+      const result = await this.dbService.execute(
+        `update users set name = ?, password = ?, is_deleted = 0, join_date = now() where id = ?`,
+        [name, password, oldUser.id],
+      );
+      return result.affectedRows;
+    }
+    const res = await this.dbService.execute(
+      `insert into users (name, sch_id, password, join_date) values (?, ?, ?, now())`,
+      [name, sch_id, password],
     );
     return res.affectedRows;
   }
@@ -161,15 +171,17 @@ export class UserDao {
     if (userList.length === 0) return 0;
     // 循环插入每一个用户，遇到重复用户时抛出这个用户
     await this.dbService.runTransaction<void>(async (conn) => {
-      const password = await bcryptjs.hash('123456', 10);
       for (const user of userList) {
+        const password = await bcryptjs.hash('123456', 10);
         const { name, sch_id } = user;
         const selectedUser = await this.getUserBySchId(sch_id);
         if (selectedUser) throw new Error(`用户 ${name} 已存在`);
-        conn.execute(
-          `insert into users (name, sch_id, password) values (?, ?, ?)`,
-          [name, sch_id, password],
-        );
+        const newUser: User = {
+          name,
+          sch_id,
+          password,
+        };
+        await this.addUser(newUser);
       }
     });
     return 1;
