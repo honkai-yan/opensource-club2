@@ -10,6 +10,10 @@ export const getTokenObj = async <T>(
   if (!Object.prototype.hasOwnProperty.call(req.cookies, key)) return null;
   const token = (req.cookies as any)[key];
   if (!token) return null;
-  const verifiedToken: T = (await verifyToken(token)) as any;
-  return verifiedToken || null;
+  try {
+    const verifiedToken: T = (await verifyToken(token)) as any;
+    return verifiedToken || null;
+  } catch (err) {
+    return null;
+  }
 };
