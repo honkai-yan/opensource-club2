@@ -137,8 +137,8 @@ export class UserService {
       });
       if (affectedRows === 0) {
         return {
-          code: 500,
-          message: '系统错误，请稍后再试',
+          code: 409,
+          message: '该用户已存在',
         };
       }
       return {
@@ -146,12 +146,6 @@ export class UserService {
         message: '操作成功',
       };
     } catch (error) {
-      if (error.errno === 1062) {
-        throw new HttpException(
-          ExceptionEnum.DuplicateUserException,
-          ExceptionEnum.DuplicateUserExceptionCode,
-        );
-      }
       this.logger.error(error);
       throw new HttpException(
         ExceptionEnum.InternalServerErrorException,
@@ -196,13 +190,7 @@ export class UserService {
       };
     }
     try {
-      const affectedRows = await this.userDao.addUserBatch(userList);
-      if (affectedRows === 0) {
-        return {
-          code: 400,
-          message: '用户列表为空',
-        };
-      }
+      await this.userDao.addUserBatch(userList);
       return {
         code: 200,
         message: '操作成功',

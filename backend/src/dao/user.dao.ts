@@ -131,22 +131,16 @@ export class UserDao {
 
   async addUser(user: User) {
     const { name, sch_id, password } = user;
-    const [oldUser] = await this.dbService.query<User>(
-      `select id from users where sch_id = ? and is_deleted = 1`,
-      [sch_id],
-    );
-    if (oldUser) {
-      const result = await this.dbService.execute(
-        `update users set name = ?, password = ?, is_deleted = 0, join_date = now() where id = ?`,
-        [name, password, oldUser.id],
+    const res = await this.dbService.runTransaction<number>(async () => {
+      const oldUser = await this.getUserBySchId(sch_id);
+      if (oldUser) return 0;
+      const res = await this.dbService.execute(
+        `insert into users (name, sch_id, password, join_date) values (?, ?, ?, now())`,
+        [name, sch_id, password],
       );
-      return result.affectedRows;
-    }
-    const res = await this.dbService.execute(
-      `insert into users (name, sch_id, password, join_date) values (?, ?, ?, now())`,
-      [name, sch_id, password],
-    );
-    return res.affectedRows;
+      return res.affectedRows;
+    });
+    return res;
   }
 
   async delUserById(id: number): Promise<number> {
@@ -174,14 +168,13 @@ export class UserDao {
       for (const user of userList) {
         const password = await bcryptjs.hash('123456', 10);
         const { name, sch_id } = user;
-        const selectedUser = await this.getUserBySchId(sch_id);
-        if (selectedUser) throw new Error(`用户 ${name} 已存在`);
         const newUser: User = {
           name,
           sch_id,
           password,
         };
-        await this.addUser(newUser);
+        const res = await this.addUser(newUser);
+        if (res === 0) throw new Error(`用户${name}已存在`);
       }
     });
     return 1;
