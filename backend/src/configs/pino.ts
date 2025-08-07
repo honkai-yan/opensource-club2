@@ -14,7 +14,7 @@ export const loggerConfig: ReturnType<typeof LoggerModule.forRoot> =
                 target: 'pino/file',
                 level: 'info',
                 options: {
-                  destination: path.join(__dirname, './logs/app.log'),
+                  destination: path.join(process.cwd(), './logs/app.log'),
                   mkdir: true,
                   translateTime: 'SYS:yyyy-mm-dd HH:MM:ss',
                 },

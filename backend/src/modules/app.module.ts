@@ -10,6 +10,7 @@ import { loggerConfig } from 'src/configs/pino';
 @Module({
   imports: [
     ConfigModule.forRoot({
+      isGlobal: true,
       envFilePath: [`.env.${process.env.NODE_ENV}`, '.env'],
     }),
     LoginModule,
