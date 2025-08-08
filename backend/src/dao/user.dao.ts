@@ -157,7 +157,6 @@ export class UserDao {
     }
 
     // 默认添加普通用户角色
-    console.info(`添加用户 ${name} 成功，id: ${res.insertId}`);
     const addRoleSql = `insert into users_positions (user_id, pos_id, appoint_date) values (?, ?, now())`;
     const addRoleValues = [res.insertId, CommonConstants.DEFAULT_USER_ROLE_ID];
     await conn.execute(addRoleSql, addRoleValues);
