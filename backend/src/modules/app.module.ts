@@ -40,6 +40,10 @@ export class AppModule {
         path: 'user/delUserBatch',
         method: RequestMethod.POST,
       },
+      {
+        path: 'user/adminUpdateUser',
+        method: RequestMethod.POST,
+      },
     );
   }
 }

@@ -9,6 +9,7 @@ import { UserRole } from 'src/interfaces/userRole.interface';
 import { DatabaseService } from 'src/services/database.service';
 import bcryptjs from 'bcryptjs';
 import mysql from 'mysql2/promise';
+import { AdminUpdateUserDto } from 'src/dto/adminUpdateUser.dto';
 
 @Injectable()
 export class UserDao {
@@ -193,5 +194,26 @@ export class UserDao {
         await this.delUserById(id);
       }
     });
+  }
+
+  /**
+   * 管理员更新用户信息
+   * @param userNewInfo 管理员更新用户信息
+   * @returns 返回受影响的行数
+   */
+  async adminUpdateUser(userNewInfo: AdminUpdateUserDto): Promise<number> {
+    const { id, name, sch_id, cur_point, total_point } = userNewInfo;
+    const res = await this.dbService.runTransaction<OkPacketParams>(
+      async (conn) => {
+        // 悲观锁
+        await conn.query('SELECT * FROM users WHERE id = ? FOR UPDATE', [id]);
+        const [result] = await conn.query(
+          `UPDATE users SET name = ?, sch_id = ?, cur_point = ?, total_point = ? WHERE id = ?`,
+          [name, sch_id, cur_point, total_point, id],
+        );
+        return result as OkPacketParams;
+      },
+    );
+    return res.affectedRows;
   }
 }

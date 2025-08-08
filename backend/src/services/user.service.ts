@@ -9,6 +9,7 @@ import { AddUserDto } from 'src/dto/addUser.dto';
 import bcrypt from 'bcryptjs';
 import { UserRole } from 'src/interfaces/userRole.interface';
 import { Logger } from 'nestjs-pino';
+import { AdminUpdateUserDto } from 'src/dto/adminUpdateUser.dto';
 
 @Injectable()
 export class UserService {
@@ -113,12 +114,15 @@ export class UserService {
       const role = await this.userDao.getUserRoleById(id);
       if (!role) {
         throw new HttpException(
-          ExceptionEnum.UserNotFoundException,
-          ExceptionEnum.UserNotFoundExceptionCode,
+          ExceptionEnum.UnknownRoleException,
+          ExceptionEnum.UnknownRoleExceptionCode,
         );
       }
       return role.name;
     } catch (e) {
+      if (e instanceof HttpException) {
+        throw e; // 直接抛出http异常
+      }
       this.logger.error(e);
       throw new HttpException(
         ExceptionEnum.InternalServerErrorException,
@@ -223,6 +227,30 @@ export class UserService {
       return {
         code: 200,
         message: '删除成功',
+      };
+    } catch (error) {
+      this.logger.error(error);
+      throw new HttpException(
+        ExceptionEnum.InternalServerErrorException,
+        ExceptionEnum.InternalServerErrorExceptionCode,
+      );
+    }
+  }
+
+  async adminUpdateUser(
+    userNewInfo: AdminUpdateUserDto,
+  ): Promise<OperationResult> {
+    try {
+      const affectedRows = await this.userDao.adminUpdateUser(userNewInfo);
+      if (affectedRows === 0) {
+        return {
+          code: ExceptionEnum.UserNotFoundExceptionCode as number,
+          message: ExceptionEnum.UserNotFoundException as string,
+        };
+      }
+      return {
+        code: 200,
+        message: '操作成功',
       };
     } catch (error) {
       this.logger.error(error);

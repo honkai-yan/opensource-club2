@@ -9,6 +9,7 @@ import {
 import { Request } from 'express';
 import { ExceptionEnum } from 'src/common/enums/exception.enum';
 import { AddUserBatchDto, AddUserDto } from 'src/dto/addUser.dto';
+import { AdminUpdateUserDto } from 'src/dto/adminUpdateUser.dto';
 import { DelUserBatchDto, DelUserDto } from 'src/dto/delUser.dto';
 import { OperationResponseDto } from 'src/dto/operationResponse.dto';
 import { UpdateUserProfileDto } from 'src/dto/updateUserProfile.dto';
@@ -105,6 +106,15 @@ export class UserController {
   @Post('delUserBatch')
   async delUserBatch(@Body() delUserBatch: DelUserBatchDto) {
     const result = await this.userService.delUserBatch(delUserBatch.items);
+    if (result.code !== 200) {
+      throw new HttpException(result.message, result.code);
+    }
+    return new OperationResponseDto(result.code, result.message);
+  }
+
+  @Post('adminUpdateUser')
+  async adminUpdateUser(@Body() userNewInfo: AdminUpdateUserDto) {
+    const result = await this.userService.adminUpdateUser(userNewInfo);
     if (result.code !== 200) {
       throw new HttpException(result.message, result.code);
     }

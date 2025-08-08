@@ -28,4 +28,8 @@ export enum ExceptionEnum {
 
   DuplicateUserExceptionCode = 409,
   DuplicateUserException = '用户已存在',
+
+  // 未知角色
+  UnknownRoleExceptionCode = 400,
+  UnknownRoleException = '未知角色',
 }
