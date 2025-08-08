@@ -37,20 +37,21 @@ export class UserDao {
 
   private readonly getUserDetailSqlBase = `
       select
-        u.id,
-        u.name,
-        u.nick_name,
-        u.description,
-        u.avatar_src,
-        p.name as role,
-        sd.name as direction,
-        d.name as department,
-        u.sch_id,
-        u.cur_point,
-        u.total_point,
-        u.join_date,
-        u.delete_date,
-        u.is_deleted
+        u.id, -- 用户id
+        u.name, -- 用户姓名
+        u.nick_name, -- 用户昵称
+        u.description, -- 用户描述
+        u.avatar_src, -- 用户头像
+        p.name as role, -- 用户角色
+        sd.name as direction, -- 用户学习方向
+        d.name as department, -- 用户部门
+        g.name as group_name, -- 用户所在小组
+        u.sch_id, -- 学号
+        u.cur_point, -- 当前积分
+        u.total_point, -- 总积分
+        u.join_date, -- 加入时间
+        u.delete_date, -- 删除时间
+        u.is_deleted -- 是否被删除
       from users u
       -- 职位
       left join users_positions up on u.id = up.user_id
