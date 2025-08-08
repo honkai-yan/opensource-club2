@@ -16,4 +16,20 @@ export enum ExceptionEnum {
 
   RefreshTokenInvalidExceptionCode = 401,
   RefreshTokenInvalidException = '登录信息已失效',
+
+  AccessTokenInvalidExceptionCode = 401,
+  AccessTokenInvalidException = '登录信息已失效',
+
+  InvalidUserExceptionCode = 401,
+  InvalidUserException = '非法用户',
+
+  NoPermissionExceptionCode = 401,
+  NoPermissionException = '权限不足',
+
+  DuplicateUserExceptionCode = 409,
+  DuplicateUserException = '用户已存在',
+
+  // 未知角色
+  UnknownRoleExceptionCode = 400,
+  UnknownRoleException = '未知角色',
 }

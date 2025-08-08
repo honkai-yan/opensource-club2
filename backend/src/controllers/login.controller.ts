@@ -17,16 +17,22 @@ import { CaptchaPayload } from 'src/interfaces/captcha.interface';
 import { ExceptionEnum } from 'src/common/enums/exception.enum';
 import { LoginResponseDto } from 'src/dto/loginResponse.dto';
 import { RefreshTokenPayload } from 'src/interfaces/refreshTokenPayload.interface';
+import { isEmpty } from 'lodash';
+import { getTokenObj } from 'src/utils/token';
+import { Logger } from 'nestjs-pino';
 
-@Controller('/login')
+@Controller('auth')
 export class LoginController {
-  constructor(private readonly loginService: LoginService) {}
+  constructor(
+    private readonly loginService: LoginService,
+    private readonly logger: Logger,
+  ) {}
 
-  @Get('/getCaptcha')
+  @Get('getCaptcha')
   async getCaptcha(@Res() res: Response) {
     let { data, text } = svgCaptcha.create();
     text = text.toLowerCase();
-    console.info(text);
+    this.logger.debug(text);
     const payload: CaptchaPayload = {
       text: text,
     };
@@ -35,33 +41,15 @@ export class LoginController {
     return res.send(data);
   }
 
-  @Post()
+  @Post('login')
   async login(
     @Body() loginInfoDto: LoginInfoDto,
     @Req() req: Request,
     @Res() res: Response,
   ) {
-    // 校验请求参数
-    if (!loginInfoDto) {
-      throw new HttpException(
-        ExceptionEnum.RequestParamException,
-        ExceptionEnum.RequestParamExceptionCode,
-      );
-    }
+    const captcha = await getTokenObj<CaptchaPayload>(req, 'captcha');
 
-    const { sch_id, pass, captcha } = loginInfoDto;
-
-    if (!sch_id || !pass || !captcha) {
-      throw new HttpException(
-        ExceptionEnum.CaptchaErrorException,
-        ExceptionEnum.CaptchaErrorExceptionCode,
-      );
-    }
-
-    // 校验验证码Cookie
-    const captchaInCookie = req.cookies.captcha;
-
-    if (!captchaInCookie) {
+    if (!captcha) {
       throw new HttpException(
         ExceptionEnum.CaptchaErrorException,
         ExceptionEnum.CaptchaErrorExceptionCode,
@@ -71,7 +59,7 @@ export class LoginController {
     // 发起登录
     const loginResult = await this.loginService.userLogin(
       loginInfoDto,
-      captchaInCookie,
+      captcha,
     );
 
     // 登录失败
@@ -101,9 +89,17 @@ export class LoginController {
     );
   }
 
-  @Post('/auto')
+  @Post('autoLogin')
   async autoLogin(@Req() req: Request, @Res() res: Response) {
     // 校验刷新令牌
+    const cookie = req.cookies.refreshToken;
+    if (!cookie) {
+      throw new HttpException(
+        ExceptionEnum.RefreshTokenInvalidException,
+        ExceptionEnum.RefreshTokenInvalidExceptionCode,
+      );
+    }
+
     const refreshToken: RefreshTokenPayload = (await verifyToken(
       req.cookies.refreshToken,
     )) as any;
@@ -132,7 +128,7 @@ export class LoginController {
       loginResult.refreshToken,
       3600 * 24 * 7 * 1000,
     );
-    
+
     return res.json(
       new LoginResponseDto('登录成功', {
         ...loginResult.userInfo,
