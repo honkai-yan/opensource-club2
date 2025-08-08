@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import mysql, { OkPacketParams } from 'mysql2/promise';
+import mysql, { ResultSetHeader } from 'mysql2/promise';
 
 @Injectable()
 export class DatabaseService {
@@ -25,7 +25,7 @@ export class DatabaseService {
 
   async execute(sql: string, values?: any[]) {
     const [results] = await this.pool.execute(sql, values);
-    return results as OkPacketParams;
+    return results as ResultSetHeader;
   }
 
   async runTransaction<T>(callback: (conn: mysql.Connection) => Promise<T>) {

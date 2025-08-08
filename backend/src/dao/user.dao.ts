@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { OkPacketParams } from 'mysql2';
 import { AddUserDto } from 'src/dto/addUser.dto';
 import { UpdateUserProfileDto } from 'src/dto/updateUserProfile.dto';
 import { UserDetailDto } from 'src/dto/userDetail.dto';
@@ -110,15 +109,15 @@ export class UserDao {
 
   async updateProfileById(id: number, updateProfileDto: UpdateUserProfileDto) {
     const { nickname, description } = updateProfileDto;
-    const res = await this.dbService.runTransaction<OkPacketParams>(
+    const res = await this.dbService.runTransaction<ResultSetHeader>(
       async (conn) => {
         // 悲观锁
         await conn.query('SELECT * FROM users WHERE id = ? FOR UPDATE', [id]);
-        const [res] = await conn.query(
+        const [res] = await conn.query<ResultSetHeader>(
           `update users set nick_name = ?, description = ? where id = ?`,
           [nickname, description, id],
         );
-        return res as OkPacketParams;
+        return res;
       },
     );
     return res.affectedRows;
@@ -167,13 +166,13 @@ export class UserDao {
   }
 
   async delUserById(id: number): Promise<number> {
-    const res = await this.dbService.runTransaction<OkPacketParams>(
+    const res = await this.dbService.runTransaction<ResultSetHeader>(
       async (conn) => {
-        const [res] = await conn.execute(
+        const [res] = await conn.execute<ResultSetHeader>(
           'update users set is_deleted = 1 where id = ?',
           [id],
         );
-        return res as OkPacketParams;
+        return res;
       },
     );
     return res.affectedRows;
@@ -223,15 +222,15 @@ export class UserDao {
    */
   async adminUpdateUser(userNewInfo: AdminUpdateUserDto): Promise<number> {
     const { id, name, sch_id, cur_point, total_point } = userNewInfo;
-    const res = await this.dbService.runTransaction<OkPacketParams>(
+    const res = await this.dbService.runTransaction<ResultSetHeader>(
       async (conn) => {
         // 悲观锁
         await conn.query('SELECT * FROM users WHERE id = ? FOR UPDATE', [id]);
-        const [result] = await conn.query(
+        const [result] = await conn.query<ResultSetHeader>(
           `UPDATE users SET name = ?, sch_id = ?, cur_point = ?, total_point = ? WHERE id = ?`,
           [name, sch_id, cur_point, total_point, id],
         );
-        return result as OkPacketParams;
+        return result;
       },
     );
     return res.affectedRows;
