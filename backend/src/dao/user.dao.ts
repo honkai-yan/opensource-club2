@@ -8,8 +8,9 @@ import { User } from 'src/interfaces/user.interface';
 import { UserRole } from 'src/interfaces/userRole.interface';
 import { DatabaseService } from 'src/services/database.service';
 import bcryptjs from 'bcryptjs';
-import mysql from 'mysql2/promise';
+import mysql, { ResultSetHeader } from 'mysql2/promise';
 import { AdminUpdateUserDto } from 'src/dto/adminUpdateUser.dto';
+import { CommonConstants } from 'src/common/constants';
 
 @Injectable()
 export class UserDao {
@@ -132,17 +133,36 @@ export class UserDao {
   }
 
   async addUser(user: User, conn?: mysql.Connection): Promise<number> {
-    const { name, sch_id, password } = user;
+    if (!conn) {
+      return await this.dbService.runTransaction<number>(async (conn) => {
+        return await this._addUserImpl(user, conn);
+      });
+    }
+    return await this._addUserImpl(user, conn);
+  }
+
+  async _addUserImpl(use: User, conn: mysql.Connection): Promise<number> {
+    const { name, sch_id, password } = use;
     const oldUser = await this.getUserBySchId(sch_id);
     if (oldUser) return 0;
-    const sql = `insert into users (name, sch_id, password, join_date) values (?, ?, ?, now())`;
-    const values = [name, sch_id, password];
-    let res: OkPacketParams;
-    if (conn) {
-      res = (await conn.execute(sql, values)) as OkPacketParams;
-    } else {
-      res = await this.dbService.execute(sql, values);
+
+    const addUsersql = `insert into users (name, sch_id, password, join_date) values (?, ?, ?, now())`;
+    const addUservalues = [name, sch_id, password];
+    const [res] = await conn.execute<ResultSetHeader>(
+      addUsersql,
+      addUservalues,
+    );
+
+    if (res.affectedRows === 0) {
+      return res.affectedRows; // 插入失败，用户已存在
     }
+
+    // 默认添加普通用户角色
+    console.info(`添加用户 ${name} 成功，id: ${res.insertId}`);
+    const addRoleSql = `insert into users_positions (user_id, pos_id, appoint_date) values (?, ?, now())`;
+    const addRoleValues = [res.insertId, CommonConstants.DEFAULT_USER_ROLE_ID];
+    await conn.execute(addRoleSql, addRoleValues);
+
     return res.affectedRows;
   }
 
