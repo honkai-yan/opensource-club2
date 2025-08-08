@@ -183,10 +183,11 @@ export class UserService {
         message: '用户列表为空',
       };
     }
-    if (userList.length > 200) {
+    const maxLength = 50;
+    if (userList.length > maxLength) {
       return {
         code: 400,
-        message: '最大添加数量为200个',
+        message: `单次最大长度为 ${maxLength}，请分批添加`,
       };
     }
     try {

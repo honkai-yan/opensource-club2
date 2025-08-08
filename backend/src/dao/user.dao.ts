@@ -8,6 +8,7 @@ import { User } from 'src/interfaces/user.interface';
 import { UserRole } from 'src/interfaces/userRole.interface';
 import { DatabaseService } from 'src/services/database.service';
 import bcryptjs from 'bcryptjs';
+import mysql from 'mysql2/promise';
 
 @Injectable()
 export class UserDao {
@@ -129,18 +130,19 @@ export class UserDao {
     return res[0];
   }
 
-  async addUser(user: User) {
+  async addUser(user: User, conn?: mysql.Connection): Promise<number> {
     const { name, sch_id, password } = user;
-    const res = await this.dbService.runTransaction<number>(async () => {
-      const oldUser = await this.getUserBySchId(sch_id);
-      if (oldUser) return 0;
-      const res = await this.dbService.execute(
-        `insert into users (name, sch_id, password, join_date) values (?, ?, ?, now())`,
-        [name, sch_id, password],
-      );
-      return res.affectedRows;
-    });
-    return res;
+    const oldUser = await this.getUserBySchId(sch_id);
+    if (oldUser) return 0;
+    const sql = `insert into users (name, sch_id, password, join_date) values (?, ?, ?, now())`;
+    const values = [name, sch_id, password];
+    let res: OkPacketParams;
+    if (conn) {
+      res = (await conn.execute(sql, values)) as OkPacketParams;
+    } else {
+      res = await this.dbService.execute(sql, values);
+    }
+    return res.affectedRows;
   }
 
   async delUserById(id: number): Promise<number> {
@@ -163,7 +165,7 @@ export class UserDao {
    */
   async addUserBatch(userList: AddUserDto[]): Promise<number> {
     if (userList.length === 0) return 0;
-    // 循环插入每一个用户，遇到重复用户时抛出这个用户
+    // 循环插入每一个用户，遇到重复用户时抛出这个用户，然后回退
     await this.dbService.runTransaction<void>(async (conn) => {
       for (const user of userList) {
         const password = await bcryptjs.hash('123456', 10);
@@ -173,7 +175,7 @@ export class UserDao {
           sch_id,
           password,
         };
-        const res = await this.addUser(newUser);
+        const res = await this.addUser(newUser, conn);
         if (res === 0) throw new Error(`用户${name}已存在`);
       }
     });
