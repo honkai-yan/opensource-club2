@@ -20,6 +20,7 @@ import { RefreshTokenPayload } from 'src/interfaces/refreshTokenPayload.interfac
 import { isEmpty } from 'lodash';
 import { getTokenObj } from 'src/utils/token';
 import { Logger } from 'nestjs-pino';
+import { ResponseResultDto } from 'src/dto/responseResult.dto';
 
 @Controller('auth')
 export class LoginController {
@@ -82,7 +83,7 @@ export class LoginController {
     );
 
     return res.json(
-      new LoginResponseDto('登录成功', {
+      new ResponseResultDto(200, '登录成功', {
         ...loginResult.userInfo,
         password: undefined,
       }),
@@ -130,7 +131,7 @@ export class LoginController {
     );
 
     return res.json(
-      new LoginResponseDto('登录成功', {
+      new ResponseResultDto(200, '登录成功', {
         ...loginResult.userInfo,
         password: undefined,
       }),

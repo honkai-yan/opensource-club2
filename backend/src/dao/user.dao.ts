@@ -45,7 +45,6 @@ export class UserDao {
         p.name as role, -- 用户角色
         sd.name as direction, -- 用户学习方向
         d.name as department, -- 用户部门
-        g.name as group_name, -- 用户所在小组
         u.sch_id, -- 学号
         u.cur_point, -- 当前积分
         u.total_point, -- 总积分

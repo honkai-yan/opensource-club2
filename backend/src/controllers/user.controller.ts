@@ -11,7 +11,7 @@ import { ExceptionEnum } from 'src/common/enums/exception.enum';
 import { AddUserBatchDto, AddUserDto } from 'src/dto/addUser.dto';
 import { AdminUpdateUserDto } from 'src/dto/adminUpdateUser.dto';
 import { DelUserBatchDto, DelUserDto } from 'src/dto/delUser.dto';
-import { OperationResponseDto } from 'src/dto/operationResponse.dto';
+import { ResponseResultDto } from 'src/dto/responseResult.dto';
 import { UpdateUserProfileDto } from 'src/dto/updateUserProfile.dto';
 import { AccessTokenPayload } from 'src/interfaces/accessTokenPayload.interface';
 import { UserService } from 'src/services/user.service';
@@ -44,7 +44,7 @@ export class UserController {
       );
     }
 
-    return data;
+    return new ResponseResultDto(200, 'success', data);
   }
 
   @Post('updateProfile')
@@ -67,7 +67,7 @@ export class UserController {
       throw new HttpException(result.message, result.code);
     }
 
-    return new OperationResponseDto(result.code, result.message);
+    return new ResponseResultDto(result.code, result.message);
   }
 
   @Post('addUser')
@@ -79,7 +79,7 @@ export class UserController {
         operationResponse.code,
       );
     }
-    return new OperationResponseDto(
+    return new ResponseResultDto(
       operationResponse.code,
       operationResponse.message,
     );
@@ -91,7 +91,7 @@ export class UserController {
     if (result.code !== 200) {
       throw new HttpException(result.message, result.code);
     }
-    return new OperationResponseDto(result.code, result.message);
+    return new ResponseResultDto(result.code, result.message);
   }
 
   @Post('addUserBatch')
@@ -100,7 +100,7 @@ export class UserController {
     if (result.code !== 200) {
       throw new HttpException(result.message, result.code);
     }
-    return new OperationResponseDto(result.code, result.message);
+    return new ResponseResultDto(result.code, result.message);
   }
 
   @Post('delUserBatch')
@@ -109,7 +109,7 @@ export class UserController {
     if (result.code !== 200) {
       throw new HttpException(result.message, result.code);
     }
-    return new OperationResponseDto(result.code, result.message);
+    return new ResponseResultDto(result.code, result.message);
   }
 
   @Post('adminUpdateUser')
@@ -118,6 +118,6 @@ export class UserController {
     if (result.code !== 200) {
       throw new HttpException(result.message, result.code);
     }
-    return new OperationResponseDto(result.code, result.message);
+    return new ResponseResultDto(result.code, result.message);
   }
 }
