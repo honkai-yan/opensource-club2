@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { AddUserDto } from 'src/dto/addUser.dto';
-import { UpdateUserProfileDto } from 'src/dto/updateUserProfile.dto';
-import { UserDetailDto } from 'src/dto/userDetail.dto';
-import { UserProfileDto } from 'src/dto/userProfile.dto';
+import { AddUserDto } from 'src/dto/user/addUser.dto';
+import { UpdateUserProfileDto } from 'src/dto/user/updateUserProfile.dto';
+import { UserDetailDto } from 'src/dto/user/userDetail.dto';
+import { UserProfileDto } from 'src/dto/user/userProfile.dto';
 import { User } from 'src/interfaces/user.interface';
 import { UserRole } from 'src/interfaces/userRole.interface';
 import { DatabaseService } from 'src/services/database.service';
 import bcryptjs from 'bcryptjs';
 import mysql, { ResultSetHeader } from 'mysql2/promise';
-import { AdminUpdateUserDto } from 'src/dto/adminUpdateUser.dto';
+import { AdminUpdateUserDto } from 'src/dto/user/adminUpdateUser.dto';
 import { CommonConstants } from 'src/common/constants';
 
 @Injectable()

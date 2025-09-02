@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { ExceptionEnum } from 'src/common/enums/exception.enum';
-import { LoginInfoDto } from 'src/dto/loginInfo.dto';
+import { LoginInfoDto } from 'src/dto/login/loginInfo.dto';
 import { LoginResult } from 'src/interfaces/loginResult.interface';
 import { User } from 'src/interfaces/user.interface';
 import { signAccessToken, signRefreshToken, verifyToken } from 'src/utils/jwt';
 import { UserService } from './user.service';
 import { CaptchaPayload } from 'src/interfaces/captcha.interface';
 import bcryptjs from 'bcryptjs';
-import { UserDetailDto } from 'src/dto/userDetail.dto';
+import { UserDetailDto } from 'src/dto/user/userDetail.dto';
 import { Logger } from 'nestjs-pino';
 
 @Injectable()

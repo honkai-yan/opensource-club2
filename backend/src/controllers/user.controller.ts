@@ -10,12 +10,12 @@ import {
 } from '@nestjs/common';
 import { Request } from 'express';
 import { ExceptionEnum } from 'src/common/enums/exception.enum';
-import { AddUserBatchDto, AddUserDto } from 'src/dto/addUser.dto';
-import { AdminUpdateUserDto } from 'src/dto/adminUpdateUser.dto';
-import { DelUserBatchDto, DelUserDto } from 'src/dto/delUser.dto';
+import { AddUserBatchDto, AddUserDto } from 'src/dto/user/addUser.dto';
+import { AdminUpdateUserDto } from 'src/dto/user/adminUpdateUser.dto';
+import { DelUserBatchDto, DelUserDto } from 'src/dto/user/delUser.dto';
 import { ResponseResultDto } from 'src/dto/responseResult.dto';
-import { UpdateUserProfileDto } from 'src/dto/updateUserProfile.dto';
-import { UserProfileDto } from 'src/dto/userProfile.dto';
+import { UpdateUserProfileDto } from 'src/dto/user/updateUserProfile.dto';
+import { UserProfileDto } from 'src/dto/user/userProfile.dto';
 import { AccessTokenPayload } from 'src/interfaces/accessTokenPayload.interface';
 import { UserService } from 'src/services/user.service';
 import { verifyToken } from 'src/utils/jwt';

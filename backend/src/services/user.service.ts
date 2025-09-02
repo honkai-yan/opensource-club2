@@ -1,15 +1,15 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { User } from 'src/interfaces/user.interface';
 import { UserDao } from 'src/dao/user.dao';
-import { UpdateUserProfileDto } from 'src/dto/updateUserProfile.dto';
+import { UpdateUserProfileDto } from 'src/dto/user/updateUserProfile.dto';
 import { OperationResult } from 'src/interfaces/common/operationResult.interface';
 import { ExceptionEnum } from 'src/common/enums/exception.enum';
-import { UserProfileDto } from 'src/dto/userProfile.dto';
-import { AddUserDto } from 'src/dto/addUser.dto';
+import { UserProfileDto } from 'src/dto/user/userProfile.dto';
+import { AddUserDto } from 'src/dto/user/addUser.dto';
 import bcrypt from 'bcryptjs';
 import { UserRole } from 'src/interfaces/userRole.interface';
 import { Logger } from 'nestjs-pino';
-import { AdminUpdateUserDto } from 'src/dto/adminUpdateUser.dto';
+import { AdminUpdateUserDto } from 'src/dto/user/adminUpdateUser.dto';
 import { CommonConstants } from 'src/common/constants';
 
 @Injectable()

@@ -1,5 +1,5 @@
 import { ExceptionEnum } from 'src/common/enums/exception.enum';
-import { UserDetailDto } from 'src/dto/userDetail.dto';
+import { UserDetailDto } from 'src/dto/user/userDetail.dto';
 
 export interface LoginResult {
   code: number | ExceptionEnum;

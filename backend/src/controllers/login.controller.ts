@@ -7,7 +7,7 @@ import {
   Req,
   Res,
 } from '@nestjs/common';
-import { LoginInfoDto } from 'src/dto/loginInfo.dto';
+import { LoginInfoDto } from 'src/dto/login/loginInfo.dto';
 import { LoginService } from 'src/services/login.service';
 import svgCaptcha from 'svg-captcha';
 import { Request, Response } from 'express';
@@ -15,7 +15,7 @@ import { setCookie } from 'src/utils/cookie';
 import { createToken, verifyToken } from 'src/utils/jwt';
 import { CaptchaPayload } from 'src/interfaces/captcha.interface';
 import { ExceptionEnum } from 'src/common/enums/exception.enum';
-import { LoginResponseDto } from 'src/dto/loginResponse.dto';
+import { LoginResponseDto } from 'src/dto/login/loginResponse.dto';
 import { RefreshTokenPayload } from 'src/interfaces/refreshTokenPayload.interface';
 import { isEmpty } from 'lodash';
 import { getTokenObj } from 'src/utils/token';
