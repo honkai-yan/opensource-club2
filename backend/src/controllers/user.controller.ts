@@ -13,6 +13,7 @@ import { AdminUpdateUserDto } from 'src/dto/adminUpdateUser.dto';
 import { DelUserBatchDto, DelUserDto } from 'src/dto/delUser.dto';
 import { ResponseResultDto } from 'src/dto/responseResult.dto';
 import { UpdateUserProfileDto } from 'src/dto/updateUserProfile.dto';
+import { UserProfileDto } from 'src/dto/userProfile.dto';
 import { AccessTokenPayload } from 'src/interfaces/accessTokenPayload.interface';
 import { UserService } from 'src/services/user.service';
 import { verifyToken } from 'src/utils/jwt';
@@ -23,7 +24,8 @@ export class UserController {
 
   @Get('getProfiles')
   async getProfiles() {
-    return await this.userService.getProfiles();
+    const res = await this.userService.getProfiles();
+    return new ResponseResultDto<UserProfileDto[]>(200, 'success', res);
   }
 
   @Post('getProfileById')
