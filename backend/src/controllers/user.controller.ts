@@ -3,6 +3,8 @@ import {
   Controller,
   Get,
   HttpException,
+  Param,
+  ParseIntPipe,
   Post,
   Req,
 } from '@nestjs/common';
@@ -22,9 +24,12 @@ import { verifyToken } from 'src/utils/jwt';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Get('getProfiles')
-  async getProfiles() {
-    const res = await this.userService.getProfiles();
+  @Get('getProfiles/:pageSize/:pageNum')
+  async getProfiles(
+    @Param('pageSize', ParseIntPipe) pageSize: number,
+    @Param('pageNum', ParseIntPipe) pageNum: number,
+  ) {
+    const res = await this.userService.getProfiles(pageNum, pageSize);
     return new ResponseResultDto<UserProfileDto[]>(200, 'success', res);
   }
 

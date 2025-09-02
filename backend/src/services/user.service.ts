@@ -10,6 +10,7 @@ import bcrypt from 'bcryptjs';
 import { UserRole } from 'src/interfaces/userRole.interface';
 import { Logger } from 'nestjs-pino';
 import { AdminUpdateUserDto } from 'src/dto/adminUpdateUser.dto';
+import { CommonConstants } from 'src/common/constants';
 
 @Injectable()
 export class UserService {
@@ -55,9 +56,12 @@ export class UserService {
     }
   }
 
-  async getProfiles(): Promise<UserProfileDto[]> {
+  async getProfiles(
+    pageSize: number = CommonConstants.DEFAULT_PAGE_SIZE,
+    pageNum: number = CommonConstants.DEFAULT_PAGE_NUMBER,
+  ): Promise<UserProfileDto[]> {
     try {
-      return await this.userDao.getProfiles();
+      return await this.userDao.getProfiles(pageNum, pageSize);
     } catch (e) {
       this.logger.error(e);
       throw new HttpException(

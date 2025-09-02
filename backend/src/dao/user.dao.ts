@@ -92,9 +92,10 @@ export class UserDao {
     )[0];
   }
 
-  async getProfiles() {
+  async getProfiles(pageNum: number, pageSize: number) {
     return await this.dbService.query<UserProfileDto>(
-      this.getUserProfileSqlBase + 'where u.is_deleted = 0',
+      this.getUserProfileSqlBase + 'where u.is_deleted = 0 limit ?, ?',
+      [(pageNum - 1) * pageSize, pageSize],
     );
   }
 
