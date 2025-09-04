@@ -7,14 +7,14 @@ import {
 } from 'class-validator';
 
 export class UpdateUserProfileDto {
-  @IsDefined()
-  @MaxLength(20)
+  @IsNotEmpty()
   @IsString()
+  @MaxLength(20)
   nickname: string;
 
-  @IsDefined()
-  @MaxLength(255)
+  @IsNotEmpty()
   @IsString()
+  @MaxLength(255)
   description: string;
 
   constructor(nickname: string, description: string) {

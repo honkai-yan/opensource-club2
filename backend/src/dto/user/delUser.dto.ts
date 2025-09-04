@@ -14,8 +14,8 @@ export class DelUserDto {
 }
 
 export class DelUserBatchDto {
+  @IsNotEmpty()
   @IsArray()
-  @Type(() => Number)
   @IsNumber({}, { each: true })
   items: number[];
 }
