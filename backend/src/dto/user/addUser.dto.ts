@@ -9,13 +9,13 @@ import {
 import { Type } from 'class-transformer';
 
 export class AddUserDto {
-  @IsNotEmpty()
-  @IsString()
+  @IsNotEmpty({ message: '用户名不能为空' })
+  @IsString({ message: '用户名必须为字符串' })
   @MaxLength(255)
   name: string;
 
-  @IsNotEmpty()
-  @IsString()
+  @IsNotEmpty({ message: '用户密码不能为空' })
+  @IsString({ message: '用户密码必须为字符串' })
   @MaxLength(20)
   sch_id: string;
 }

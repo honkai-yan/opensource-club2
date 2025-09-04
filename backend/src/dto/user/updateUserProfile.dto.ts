@@ -7,13 +7,13 @@ import {
 } from 'class-validator';
 
 export class UpdateUserProfileDto {
-  @IsNotEmpty()
-  @IsString()
+  @IsNotEmpty({ message: '用户昵称不能为空' })
+  @IsString({ message: '用户昵称格式错误' })
   @MaxLength(20)
   nickname: string;
 
-  @IsNotEmpty()
-  @IsString()
+  @IsNotEmpty({ message: '用户描述不能为空' })
+  @IsString({ message: '用户描述格式错误' })
   @MaxLength(255)
   description: string;
 
