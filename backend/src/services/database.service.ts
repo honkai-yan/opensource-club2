@@ -18,13 +18,23 @@ export class DatabaseService {
     });
   }
 
-  async query<T>(sql: string, values?: any[]) {
-    const [rows] = await this.pool.query(sql, values);
+  async query<T>(sql: string, values?: any[], conn?: mysql.Connection) {
+    let rows = null;
+    if (conn) {
+      rows = (await conn.query(sql, values))[0];
+    } else {
+      rows = (await this.pool.query(sql, values))[0];
+    }
     return rows as T[];
   }
 
-  async execute(sql: string, values?: any[]) {
-    const [results] = await this.pool.execute(sql, values);
+  async execute(sql: string, values?: any[], conn?: mysql.Connection) {
+    let results = null;
+    if (conn) {
+      results = await conn.execute(sql, values);
+    } else {
+      results = await this.pool.execute(sql, values);
+    }
     return results as ResultSetHeader;
   }
 

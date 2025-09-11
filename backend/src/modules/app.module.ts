@@ -6,6 +6,8 @@ import { AuthenticationMiddleware } from 'src/middleware/authentication.middlewa
 import { UserController } from 'src/controllers/user.controller';
 import { AuthorizationMiddleware } from 'src/middleware/authorization.middleware';
 import { loggerConfig } from 'src/configs/pino';
+import { GroupController } from 'src/controllers/group.controller';
+import { GroupModule } from './group.module';
 
 @Module({
   imports: [
@@ -15,6 +17,7 @@ import { loggerConfig } from 'src/configs/pino';
     }),
     LoginModule,
     UserModule,
+    GroupModule,
     loggerConfig,
   ],
   controllers: [],
@@ -22,7 +25,10 @@ import { loggerConfig } from 'src/configs/pino';
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
+    // 认证
     consumer.apply(AuthenticationMiddleware).forRoutes(UserController);
+    consumer.apply(AuthenticationMiddleware).forRoutes(GroupController);
+    // 授权
     consumer.apply(AuthorizationMiddleware).forRoutes(
       {
         path: 'user/addUser',
@@ -42,6 +48,32 @@ export class AppModule {
       },
       {
         path: 'user/adminUpdateUser',
+        method: RequestMethod.POST,
+      },
+    );
+    consumer.apply(AuthorizationMiddleware).forRoutes(
+      {
+        path: 'group/updateInfoById',
+        method: RequestMethod.POST,
+      },
+      {
+        path: 'group/addUser',
+        method: RequestMethod.POST,
+      },
+      {
+        path: 'group/delUser',
+        method: RequestMethod.POST,
+      },
+      {
+        path: 'group/attachStudyDir',
+        method: RequestMethod.POST,
+      },
+      {
+        path: 'group/del',
+        method: RequestMethod.POST,
+      },
+      {
+        path: 'group/add',
         method: RequestMethod.POST,
       },
     );

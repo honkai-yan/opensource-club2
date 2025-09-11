@@ -5,4 +5,9 @@ export class CommonConstants {
   static readonly MAX_ADD_USER_BATCH_SIZE = 50;
 
   static readonly DEFAULT_USER_ROLE_ID = 1; // 普通成员角色ID
+
+  static readonly MAX_GROUP_MEMBER_COUNT = 100;
+
+  // 单次添加小组用户数量上限
+  static readonly MAX_GROUP_USER_ADD_COUNT = 20;
 }

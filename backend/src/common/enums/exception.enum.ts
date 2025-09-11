@@ -32,4 +32,8 @@ export enum ExceptionEnum {
   // 未知角色
   UnknownRoleExceptionCode = 400,
   UnknownRoleException = '未知角色',
+
+  // 重复添加小组
+  DuplicateGroupExceptionCode = 409,
+  DuplicateGroupException = '小组已存在',
 }

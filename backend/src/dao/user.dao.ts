@@ -235,4 +235,19 @@ export class UserDao {
     );
     return res.affectedRows;
   }
+
+  // 根据一个id数组判断一组用户是否都存在，如果有不存在的，返回不存在的用户的id的数组，否则返回空数组
+  async isUsersExist(
+    userIdList: number[],
+    conn?: mysql.Connection,
+  ): Promise<number[]> {
+    const sql = `select id from users where id in (?)`;
+    const res = await this.dbService.query<number>(
+      sql,
+      [userIdList.join(',')],
+      conn,
+    );
+    if (res.length === userIdList.length) return [];
+    return userIdList.filter((id) => !res.includes(id));
+  }
 }
