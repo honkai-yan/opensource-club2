@@ -10,4 +10,7 @@ export class CommonConstants {
 
   // 单次添加小组用户数量上限
   static readonly MAX_GROUP_USER_ADD_COUNT = 20;
+
+  // 单次添加学习方向数量上限
+  static readonly MAX_STUDY_DIR_ADD_COUNT = 20;
 }

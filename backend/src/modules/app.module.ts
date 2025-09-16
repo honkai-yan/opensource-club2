@@ -8,6 +8,7 @@ import { AuthorizationMiddleware } from 'src/middleware/authorization.middleware
 import { loggerConfig } from 'src/configs/pino';
 import { GroupController } from 'src/controllers/group.controller';
 import { GroupModule } from './group.module';
+import { StudyDirModule } from './studyDir.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { GroupModule } from './group.module';
     LoginModule,
     UserModule,
     GroupModule,
+    StudyDirModule,
     loggerConfig,
   ],
   controllers: [],
@@ -28,6 +30,7 @@ export class AppModule {
     // 认证
     consumer.apply(AuthenticationMiddleware).forRoutes(UserController);
     consumer.apply(AuthenticationMiddleware).forRoutes(GroupController);
+    consumer.apply(AuthenticationMiddleware).forRoutes(StudyDirModule);
     // 授权
     consumer.apply(AuthorizationMiddleware).forRoutes(
       {
@@ -74,6 +77,20 @@ export class AppModule {
       },
       {
         path: 'group/add',
+        method: RequestMethod.POST,
+      },
+    );
+    consumer.apply(AuthorizationMiddleware).forRoutes(
+      {
+        path: 'studyDir/add',
+        method: RequestMethod.POST,
+      },
+      {
+        path: 'studyDir/del',
+        method: RequestMethod.POST,
+      },
+      {
+        path: 'studyDir/update',
         method: RequestMethod.POST,
       },
     );
