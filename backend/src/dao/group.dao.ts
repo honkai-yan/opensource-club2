@@ -59,8 +59,9 @@ export class GroupDao {
     conn?: mysql.Connection,
   ): Promise<number> {
     const sql = 'select count(*) as cnt from `users_groups` where group_id = ?';
-    return await this.dbService.query<{ cnt: number }>(sql, [groupId], conn)[0]
-      .cnt;
+    type Res = { cnt: number };
+    const res = this.dbService.query<Res>(sql, [groupId], conn);
+    return res[0] ? res[0].cnt : 0;
   }
 
   async addUser(
@@ -84,9 +85,8 @@ export class GroupDao {
     conn?: mysql.Connection,
   ): Promise<boolean> {
     const { groupId, users } = delUserDto;
-    const sql =
-      'delete from users_groups where user_id in (?) and group_id = ?';
-    await this.dbService.execute(sql, [users.join(','), groupId], conn);
+    const sql = `delete from users_groups where user_id in (${users.map(() => '?').join(',')}) and group_id = ?`;
+    await this.dbService.execute(sql, [...users, groupId], conn);
     return true;
   }
 
@@ -144,7 +144,7 @@ export class GroupDao {
   ): Promise<boolean> {
     const { groupId } = delGroupDto;
     const sql = 'delete from `groups` where id = ?';
-    await conn.query(sql, [groupId]);
+    await this.dbService.query(sql, [groupId], conn);
     // 同步删除小组下的用户
     await this.dbService.execute(
       'delete from users_groups where group_id = ?',

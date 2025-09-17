@@ -8,6 +8,6 @@ import { UserDao } from 'src/dao/user.dao';
   imports: [DatabaseModule],
   providers: [UserService, UserDao],
   controllers: [UserController],
-  exports: [UserService, DatabaseModule],
+  exports: [UserService, DatabaseModule, UserDao],
 })
 export class UserModule {}

@@ -52,6 +52,11 @@ export class GroupController {
   @Get('getUsers/:groupId')
   async getUsers(@Param('groupId') groupId: number) {
     const res = await this.groupService.getUsers(groupId);
+    // 过滤掉密码
+    res.map((user) => {
+      delete user.password;
+      return user;
+    });
     return new ResponseResultDto<User[]>(200, '操作成功', res);
   }
 

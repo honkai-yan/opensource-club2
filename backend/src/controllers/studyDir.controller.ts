@@ -6,7 +6,7 @@ import { DelStudyDirDto } from 'src/dto/studyDirs/delStudyDir.dto';
 import { StudyDirDto as GetStudyDirDto } from 'src/dto/studyDirs/getStudyDir.dto';
 import { StudyDirService } from 'src/services/studyDir.service';
 
-@Controller('study-dir')
+@Controller('studyDir')
 export class StudyDirController {
   constructor(private readonly studyDirService: StudyDirService) {}
 

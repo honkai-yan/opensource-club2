@@ -35,7 +35,7 @@ export class DatabaseService {
     } else {
       results = await this.pool.execute(sql, values);
     }
-    return results as ResultSetHeader;
+    return results[0] as ResultSetHeader;
   }
 
   async runTransaction<T>(callback: (conn: mysql.Connection) => Promise<T>) {

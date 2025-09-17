@@ -89,6 +89,15 @@ export class GroupService {
           throw new Error(`id为 ${unknownUsers[0]} 的用户不存在`);
         }
 
+        // 判断用户是否已存在小组中
+        const usersInGroup = await this.groupDao.getUsers(groupId, conn);
+        const usersInGroupSet = new Set(usersInGroup.map((user) => user.id));
+        for (const userId of users) {
+          if (usersInGroupSet.has(userId)) {
+            throw new Error(`id为 ${userId} 的用户已在小组中`);
+          }
+        }
+
         // 插入用户
         return await this.groupDao.addUser(addUserDto, conn);
       });

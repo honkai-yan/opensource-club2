@@ -1,12 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { ResultSetHeader } from 'mysql2';
+import { Logger } from 'nestjs-pino';
 import { AddStudyDirDto } from 'src/dto/studyDirs/addStudyDirs.dto';
 import { StudyDirEntity } from 'src/entity/studyDir.entity';
 import { DatabaseService } from 'src/services/database.service';
 
 @Injectable()
 export class StudyDirDao {
-  constructor(private readonly dbService: DatabaseService) {}
+  constructor(
+    private readonly dbService: DatabaseService,
+    private readonly logger: Logger,
+  ) {}
 
   async getStudyDirs(): Promise<StudyDirEntity[]> {
     return await this.dbService.query<StudyDirEntity>(
@@ -19,9 +23,10 @@ export class StudyDirDao {
     let sql = 'insert into study_directions (leader_id, name) values ';
     const values = [];
     for (const item of items) {
-      sql += `(${item.leader_id}, '${item.name}'),`;
+      sql += `(?, ?),`;
       values.push(item.leader_id, item.name);
     }
+    sql = sql.slice(0, -1); // 去掉最后一个逗号
     await this.dbService.execute(sql, values);
     return true;
   }
@@ -40,8 +45,8 @@ export class StudyDirDao {
 
   // 删除一组学习方向
   async del(ids: number[]): Promise<number> {
-    const sql = `delete from study_directions where id in (?)`;
-    const res = await this.dbService.execute(sql, [ids.join(',')]);
+    const sql = `delete from study_directions where id in (${ids.map(() => '?').join(',')})`;
+    const res = await this.dbService.execute(sql, [...ids]);
     return res.affectedRows;
   }
 }
