@@ -36,4 +36,7 @@ export enum ExceptionEnum {
   // 重复添加小组
   DuplicateGroupExceptionCode = 409,
   DuplicateGroupException = '小组已存在',
+
+  RefreshTokenErrorExceptionCode = 401,
+  RefreshTokenErrorException = '登录Token错误',
 }

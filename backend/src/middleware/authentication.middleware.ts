@@ -10,6 +10,11 @@ export class AuthenticationMiddleware implements NestMiddleware {
   constructor(private readonly userService: UserService) {}
 
   async use(req: Request, res: Response, next: NextFunction) {
+    if (req.url === '/api/auth/checkLoginToken') {
+      next();
+      return;
+    }
+
     const tokenObj = await getTokenObj<AccessTokenPayload>(req, 'accessToken');
     if (!tokenObj) {
       throw new HttpException(

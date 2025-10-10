@@ -42,6 +42,17 @@ export class LoginController {
     return res.send(data);
   }
 
+  @Get('checkLoginToken')
+  async checkLoginToken(@Req() req: Request) {
+    const refreshToken = await getTokenObj<CaptchaPayload>(req, 'refreshToken');
+    if (!refreshToken)
+      throw new HttpException(
+        ExceptionEnum.RefreshTokenErrorException,
+        ExceptionEnum.RefreshTokenErrorExceptionCode,
+      );
+    return new ResponseResultDto(200, '令牌校验成功');
+  }
+
   @Post('login')
   async login(
     @Body() loginInfoDto: LoginInfoDto,
