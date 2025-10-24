@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/sidebar";
 import { pageMetaData } from "@/route";
 
-const DashboardLayout = () => {
+const MainPageLayout = () => {
   const location = useLocation();
   const title = pageMetaData.find((item) => item.path === location.pathname)
     ?.meta.title;
@@ -42,4 +42,4 @@ const DashboardLayout = () => {
   );
 };
 
-export default DashboardLayout;
+export default MainPageLayout;

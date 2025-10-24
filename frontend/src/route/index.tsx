@@ -3,7 +3,7 @@ import { createBrowserRouter, Navigate } from "react-router-dom";
 
 const RootLayout = lazy(() => import("../layout/root-layout"));
 const LoginPage = lazy(() => import("../views/login"));
-const DashboardLayout = lazy(() => import("../layout/dashboard-layout"));
+const MainPageLayout = lazy(() => import("../layout/main-page-layout"));
 const OverviewPage = lazy(() => import("../views/overview"));
 const MembersPage = lazy(() => import("../views/members"));
 
@@ -18,7 +18,7 @@ const routes: Parameters<typeof createBrowserRouter>[0] | any[] = [
       },
       {
         path: "dashboard",
-        element: <DashboardLayout />,
+        element: <MainPageLayout />,
         children: [
           {
             index: true,
