@@ -89,13 +89,6 @@ export function LoginForm({
       }
 
       // 发起登录
-      console.log(
-        `登录信息：${JSON.stringify({
-          sch_id: _account,
-          pass: _password,
-          captcha: _captcha,
-        })}`
-      );
       const res = await login({
         sch_id: _account,
         pass: _password,

@@ -19,7 +19,7 @@ const AppRequest = async <T, K>(
         "Content-Type": "application/json",
         ...header,
       },
-      body: JSON.stringify(data),
+      body: method === "GET" ? undefined : JSON.stringify(data),
     });
 
     if (!res.ok) {
@@ -63,7 +63,10 @@ export const login = async (
 
 export const getCaptchaData = async (): Promise<ResponseResult<string>> => {
   try {
-    const res = await fetch(captchaURL + `?${Date.now()}`);
+    const res = await fetch(captchaURL + `?${Date.now()}`, {
+      method: "GET",
+      credentials: "include",
+    });
     if (res.ok) {
       return {
         statusCode: 200,
