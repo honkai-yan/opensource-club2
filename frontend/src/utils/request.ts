@@ -1,4 +1,9 @@
-import { captchaURL, checkLoginTokenURL, loginURL } from "@/api/apis";
+import {
+  captchaURL,
+  checkLoginTokenURL,
+  loginURL,
+  autoLoginURL,
+} from "@/api/apis";
 import type {
   LoginRequestData,
   LoginResultData,
@@ -58,6 +63,13 @@ export const login = async (
     loginURL,
     "POST",
     data
+  );
+};
+
+export const autoLogin = async (): Promise<ResponseResult<LoginResultData>> => {
+  return await AppRequest<LoginRequestData, LoginResultData>(
+    autoLoginURL,
+    "POST"
   );
 };
 

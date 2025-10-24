@@ -20,6 +20,8 @@ import { isEmpty } from "lodash";
 import { Spinner } from "@/components/ui/spinner";
 import { getCaptchaData, login } from "@/utils/request";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
+import { useAppStore } from "@/store";
 
 interface FormFieldItem {
   value: string;
@@ -46,6 +48,8 @@ export function LoginForm({
   const [captchaData, setCaptchaData] = React.useState("");
   const [formFields, setFormFields] = React.useState(initialFields);
   const { account, password, captcha } = formFields;
+  const navigate = useNavigate();
+  const store = useAppStore();
 
   useEffect(() => {
     updateCaptcha();
@@ -101,7 +105,10 @@ export function LoginForm({
         throw new Error();
       }
 
+      store.setUserInfo(res.data);
+
       toast.success("登录成功！");
+      navigate("/dashboard", { replace: true });
     } catch (error) {
     } finally {
       setIsLogining(false);

@@ -5,4 +5,5 @@ const serviceBaseURL = import.meta.env.VITE_SERVICE_BASE_URL;
 const authBaseURL = `${serviceBaseURL}/auth`;
 export const checkLoginTokenURL = `${authBaseURL}/checkLoginToken`;
 export const loginURL = `${authBaseURL}/login`;
+export const autoLoginURL = `${authBaseURL}/autoLogin`;
 export const captchaURL = `${authBaseURL}/getCaptcha`;

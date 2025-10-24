@@ -7,7 +7,7 @@ const DashboardLayout = lazy(() => import("../layout/dashboard-layout"));
 const OverviewPage = lazy(() => import("../views/overview"));
 const MembersPage = lazy(() => import("../views/members"));
 
-const routes: Parameters<typeof createBrowserRouter>[0] = [
+const routes: Parameters<typeof createBrowserRouter>[0] | any[] = [
   {
     path: "/",
     element: <RootLayout />,
@@ -27,10 +27,16 @@ const routes: Parameters<typeof createBrowserRouter>[0] = [
           {
             path: "overview",
             element: <OverviewPage />,
+            meta: {
+              title: "概览",
+            },
           },
           {
             path: "members",
             element: <MembersPage />,
+            meta: {
+              title: "成员列表",
+            },
           },
         ],
       },
@@ -43,3 +49,18 @@ const routes: Parameters<typeof createBrowserRouter>[0] = [
 ];
 
 export const router = createBrowserRouter(routes);
+
+export const pageMetaData = [
+  {
+    path: "/dashboard/overview",
+    meta: {
+      title: "概览",
+    },
+  },
+  {
+    path: "/dashboard/members",
+    meta: {
+      title: "成员列表",
+    },
+  },
+];
