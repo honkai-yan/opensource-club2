@@ -28,3 +28,6 @@ frontend/.vercel/
 
 backend/.turbo/
 backend/.vercel/
+
+backend/secrets/*
+!backend/secrets/readme.md
