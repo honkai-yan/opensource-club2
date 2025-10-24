@@ -44,7 +44,10 @@ export class LoginController {
 
   @Get('checkLoginToken')
   async checkLoginToken(@Req() req: Request) {
-    const refreshToken = await getTokenObj<CaptchaPayload>(req, 'refreshToken');
+    const refreshToken = await getTokenObj<RefreshTokenPayload>(
+      req,
+      'refreshToken',
+    );
     if (!refreshToken)
       throw new HttpException(
         ExceptionEnum.RefreshTokenErrorException,

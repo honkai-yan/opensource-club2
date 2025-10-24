@@ -11,8 +11,7 @@ export class AuthenticationMiddleware implements NestMiddleware {
 
   async use(req: Request, res: Response, next: NextFunction) {
     if (req.url === '/api/auth/checkLoginToken') {
-      next();
-      return;
+      return next();
     }
 
     const tokenObj = await getTokenObj<AccessTokenPayload>(req, 'accessToken');

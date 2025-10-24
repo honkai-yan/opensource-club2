@@ -7,11 +7,19 @@ import { readFileSync } from 'fs';
 import path from 'path';
 
 process.env.NODE_ENV = process.env.NODE_ENV || 'production';
+const sslKeyPath = path.join(__dirname, '../secrets/localhost.key');
+const sslCrtPath = path.join(__dirname, '../secrets/localhost.crt');
 
 async function bootstrap() {
+  if (process.env.NODE_ENV === 'development') {
+    console.log(
+      `开启https，证书地址：\nkey: ${sslKeyPath}\ncrt: ${sslCrtPath}`,
+    );
+  }
+
   const httpsOptions = {
-    key: readFileSync(path.join(__dirname, '../secrets/localhost.key')),
-    cert: readFileSync(path.join(__dirname, '../secrets/localhost.crt')),
+    key: readFileSync(sslKeyPath),
+    cert: readFileSync(sslCrtPath),
   };
 
   // 创建 nest 应用
