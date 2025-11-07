@@ -2,6 +2,9 @@ import { useEffect } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { checkIfLogined as checkLoginToken } from "../utils";
 import { Toaster, toast } from "sonner";
+import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
 
 const RootLayout = () => {
   const navigate = useNavigate();
@@ -44,7 +47,9 @@ const RootLayout = () => {
       }}
     >
       <Toaster position="top-center" richColors />
-      <Outlet />
+      <QueryClientProvider client={queryClient}>
+        <Outlet />
+      </QueryClientProvider>
     </div>
   );
 };

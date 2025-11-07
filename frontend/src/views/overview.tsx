@@ -1,5 +1,7 @@
+import { Skeleton } from "@/components/ui/skeleton";
+
 const OverviewPage = () => {
-  return <div>概览页面</div>;
+  return <div className="w-full"></div>;
 };
 
 export default OverviewPage;

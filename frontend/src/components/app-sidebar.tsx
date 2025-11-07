@@ -19,6 +19,7 @@ import {
   SidebarRail,
   SidebarMenuItem,
   SidebarMenuButton,
+  useSidebar,
 } from "@/components/ui/sidebar";
 
 // This is sample data.
@@ -56,6 +57,9 @@ const data = {
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const sidebar = useSidebar();
+  const isCollapsed = sidebar.state === "collapsed";
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -75,7 +79,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent className={`${isCollapsed ? "" : "px-2"}`}>
         <NavMain items={data.navMain} />
       </SidebarContent>
       <SidebarFooter>
